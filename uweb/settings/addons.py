@@ -1,7 +1,7 @@
 
 # Add any additional apps here
 ADDON_APPS = [
-    "home",
-    "search",
-    "blog",
+    "webapps.home",
+    "webapps.search",
+    "webapps.blog",
 ]
