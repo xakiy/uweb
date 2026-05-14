@@ -1,0 +1,7 @@
+{% load navigation_tags wagtailcore_tags %}
+
+<ul class="dropdown-menu">
+    {% for child in menuitems_children %}
+      <li><a class="dropdown-item{% if child.url in request.get_full_path %} active{% endif %}" href="{% pageurl child %}">{% if child.seo_title %} {{ child.seo_title }} {% else %} {{ child.title }} {% endif %}</a></li>
+    {% endfor %}
+</ul>

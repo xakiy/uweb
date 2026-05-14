@@ -1,0 +1,36 @@
+{% load navigation_tags wagtailcore_tags wagtailimages_tags %}
+{% wagtail_site as current_site %}
+
+    <header>
+      <div id="main-header" class="container">
+
+        <nav id="primary-navigation" class="navbar navbar-expand-lg">
+          <div class="container-fluid">
+            <h1 id="header-title-text" class="navbar-brand mb-3 mb-md-0 me-0 col-lg-2">
+              <a href="/" class="link-body-emphasis text-decoration-none">
+                {% image settings.home.SiteSettings.site_logo original id="header-logo-image" %}
+                <span class="fs-4">{% if current_site and current_site.site_name %} {{ current_site.site_name }} {% endif %}</span>
+              </a>
+            </h1>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="main-navbar" class="collapse navbar-collapse col-lg-10 justify-content-end">
+
+              <ul class="navbar-nav mb-2 mb-lg-0">
+                {# main_menu is defined in home/templatetags/navigation_tags.py #}
+                {% get_site_root as site_root %}
+                {% top_menu parent=site_root calling_page=self %}
+              </ul>
+
+              <form class="d-flex" role="search" action="/search" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search" autocomplete="off" name="q" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+
+            </div>
+          </div>
+        </nav>
+
+      </div>
+    </header>

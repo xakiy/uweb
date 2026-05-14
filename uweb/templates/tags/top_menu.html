@@ -1,0 +1,18 @@
+{% load navigation_tags wagtailcore_tags %}
+{% get_site_root as site_root %}
+{% if site_root %}
+                <li class="nav-item">
+                  <a href="{% pageurl site_root %}" class="nav-link{% if site_root.url == request.get_full_path %} active{% endif %}">{{ site_root.seo_title }}</a>
+                </li>
+{% endif %}
+{% for menuitem in menuitems %}
+                <li class="nav-item {% if menuitem.show_dropdown %} dropdown{% endif %}">
+                  {% if menuitem.show_dropdown %}
+                    <a class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" aria-current="page" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="{% pageurl menuitem %}">{% if menuitem.seo_title %} {{ menuitem.seo_title }} {% else %} {{ menuitem.title }} {% endif %}</a>
+                    {% top_menu_children parent=menuitem %}
+                    {# Used to display child menu items #}
+                  {% else %}
+                    <a class="nav-link{% if menuitem.active %} active{% endif %}" href="{% pageurl menuitem %}">{% if menuitem.seo_title %} {{ menuitem.seo_title }} {% else %} {{ menuitem.title }} {% endif %}</a>
+                  {% endif %}
+                </li>
+{% endfor %}

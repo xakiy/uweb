@@ -2,17 +2,24 @@
 
 {% load wagtailcore_tags %}
 
-{% block body_class %}template-blogindexpage{% endblock %}
-
 {% block content %}
-    <h1>{{ page.title }}</h1>
 
-    <p class="meta">{{ page.date }}</p>
+            <section>
 
-    <div class="intro">{{ page.intro|richtext }}</div>
+                <div class="container">
 
-    {{ post.body|richtext }}
+                    <h2>{{ page.title }}</h2>
 
-    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+                    <p class="meta">{{ page.date }}</p>
+
+                    <div class="intro">{{ page.intro|richtext }}</div>
+
+                    {{ post.body|richtext }}
+
+                    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+
+                </div>
+
+            </section>
 
 {% endblock %}

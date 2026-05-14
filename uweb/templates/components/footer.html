@@ -1,0 +1,64 @@
+{% load static navigation_tags wagtailimages_tags wagtailcore_tags %}
+{% wagtail_site as current_site %}
+
+      <section class="container">
+
+        <div class="row mb-4">
+          <div class="col-lg-6 col-md-6">
+            <h5 class="mb-3 brand-title">{% image settings.home.SiteSettings.site_logo original id="footer-logo-image" %}{{ current_site.site_name }}</h5>
+            <p class="mb-2">{{ settings.home.SiteSettings.site_description }}</p>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-4 col-md-6 mb-4">
+
+            <h5 class="mb-3">Office</h5>
+            <address class="mb-2"><i class="fa-solid fa-location-dot"></i>{% if settings.home.SiteSettings.site_address %} {{ settings.home.SiteSettings.site_address }} {% else %} Jln. Raya Juanda KM. 07 Surabaya {% endif %}</address>
+            <p class="mb-2"><i class="fa-brands fa-whatsapp"></i>+62 123-4567-8900</p>
+            <p class="mb-2"><i class="fa-regular fa-envelope"></i>info (di) example.com</p>
+
+            {% get_social_media_link %}
+
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <h5 class="mb-3">Layanan</h5>
+            <ul class="footer-nav">
+              <li class="footer-nav-item mb-2"><a href="#" class="footer-nav-link p-0">Konsultasi Bisnis Digital</a></li>
+              <li class="footer-nav-item mb-2"><a href="#" class="footer-nav-link p-0">Website Company Profile</a></li>
+              <li class="footer-nav-item mb-2"><a href="#" class="footer-nav-link p-0">Website Sekolah / Institusi / Pribadi</a></li>
+              <li class="footer-nav-item mb-2"><a href="#" class="footer-nav-link p-0">Mobile App Development</a></li>
+
+            </ul>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-4">
+            <h5 class="mb-3">Jam Kerja</h5>
+            <p class="mb-1">Senin - Jum'at : <strong>08.00 - 17.00 WITA (UTC+8)</strong></p>
+            <p class="mb-1">Sabtu - Ahad / Hari Libur : <strong>Tutup</strong></p>
+            <h5 class="mt-4 mb-3">Pembayaran</h5>
+            <h6 class="text-dark"><i class="fa-solid fa-wallet"></i>QRIS, Gopay, OVO, Shopeepay</h6>
+            <h6 class="text-dark"><i class="fa-solid fa-landmark"></i>Transfer Bank</h6>
+            <h6 class="text-dark"><i class="fa-solid fa-credit-card"></i>Visa, MasterCard, PayPal</h6>
+          </div>
+
+        </div>
+
+        {% get_copyright_text %}
+
+        <div class="whatsapp-button-bottom">
+          <a href="https://wa.me/6287865305794" class="bubble-btn whatsapp">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="text-btn">Konsultasi Gratis</span>
+          </a>
+        </div>
+
+        <div class="back-to-top">
+          <a href="#" class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-circle-up"></i>
+          </a>
+        </div>
+
+      </section>

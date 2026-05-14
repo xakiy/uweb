@@ -3,15 +3,22 @@
 
 {% load wagtailcore_tags %}
 
-{% block body_class %}template-homepage{% endblock %}
-
-{% block extra_css %}
-
-<link rel="stylesheet" href="{% static 'css/welcome_page.css' %}">
-{% endblock extra_css %}
-
 {% block content %}
 
-    {{ page.body|richtext }}
+            <section>
+
+                <div class="container">
+
+                    <h2>{{ page.title }}</h2>
+
+                    <p class="meta">{{ page.date }}</p>
+
+                    <div class="intro">{{ page.intro|richtext }}</div>
+
+                    {{ page.body|richtext }}
+
+                </div>
+
+            </section>
 
 {% endblock content %}

@@ -15,16 +15,24 @@ urlpatterns = [
     path("search/", search_views.search, name="search"),
 ]
 
-
+# Any static files will be served by django server internally
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-    from debug_toolbar.toolbar import debug_toolbar_urls
+    from django.views.generic.base import RedirectView
 
     # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += debug_toolbar_urls()
+    urlpatterns += [path("favicon.ico", RedirectView.as_view(
+        url=settings.STATIC_URL + "images/favicon.ico"),)]
+
+    # Prevent debugtoolbar to load while doing automated testing
+    if not settings.TESTING:
+        from debug_toolbar.toolbar import debug_toolbar_urls
+
+        urlpatterns += debug_toolbar_urls()
+
 
 urlpatterns = urlpatterns + [
     # For anything not caught by a more specific rule above, hand over to

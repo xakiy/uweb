@@ -25,6 +25,7 @@ BASE_DIR = PROJECT_DIR.parent
 INSTALLED_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.settings",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -146,7 +147,7 @@ WAGTAILSEARCH_BACKENDS = {
 
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
-WAGTAILADMIN_BASE_URL = "http://example.com"
+# WAGTAILADMIN_BASE_URL = "http://mywebsite.com"
 
 # Allowed file extensions for documents in the document library.
 # This can be omitted to allow all files, but note that this may present a security risk
@@ -218,7 +219,7 @@ elif Path(BASE_DIR / "config" / ".env.devel").is_file():
     WAGTAILADMIN_STATIC_FILE_VERSION_STRINGS = True
 
     # Django debug toolbar
-    if DEBUG and "django.contrib.staticfiles" in INSTALLED_APPS:
+    if DEBUG and not TESTING:
         INSTALLED_APPS.append("debug_toolbar")
         MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
         STATIC_URL = "static/"

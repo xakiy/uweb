@@ -1,0 +1,12 @@
+:root {
+  --bs-main-primary: #DD761C;
+  --bs-main-secondary: #6DC5D1;
+  --bs-accent-primary: #FEB941;
+  --bs-accent-secondary: #FDE49E;
+  --bs-primary: var(--bs-main-primary);
+  --bs-secondary: var(--bs-main-secondary);
+  --bs-body-bg: #eef7ff;
+  --bs-body-bg-rgb: 238, 247, 255;
+  --bs-body-bg-tint: #dbe9f5;
+  --bs-body-bg-tint-rgb: 202, 219, 235;
+}
