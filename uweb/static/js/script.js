@@ -33,32 +33,3 @@ if (backtotop) {
   window.addEventListener('load', toggleBacktotop)
   document.addEventListener('scroll', toggleBacktotop)
 }
-
-/**
- * Splider
- */
-var spliderCheck = document.getElementsByClassName("splide").length;
-if (spliderCheck) {
-  let splider = new Splide( '.splide', {
-    type   : 'loop',
-    drag   : 'free',
-    focus  : 'center',
-    perPage: 3,
-    autoScroll: {
-      speed: .5,
-    },
-  } );
-  splider.mount( window.splide.Extensions );
-}
-
-/**
- * Animation on scroll
- */
-window.addEventListener('load', () => {
-  AOS.init({
-    duration: 1000,
-    easing: 'ease-in-out',
-    once: true,
-    mirror: false
-  })
-});

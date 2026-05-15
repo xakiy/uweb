@@ -145,16 +145,6 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-# Base URL to use when referring to full URLs within the Wagtail admin backend -
-# e.g. in notification emails. Don't include '/admin' or a trailing slash
-# WAGTAILADMIN_BASE_URL = "http://mywebsite.com"
-
-# Allowed file extensions for documents in the document library.
-# This can be omitted to allow all files, but note that this may present a security risk
-# if untrusted users are allowed to upload files -
-# see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
-WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
-
 env = environ.Env()
 
 if Path(BASE_DIR / "config" / ".env.production").is_file():
@@ -172,7 +162,6 @@ if Path(BASE_DIR / "config" / ".env.production").is_file():
     # See https://docs.djangoproject.com/en/5.2/ref/contrib/staticfiles/#manifeststaticfilesstorage
     STORAGES["staticfiles"]["BACKEND"] = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-
 elif Path(BASE_DIR / "config" / ".env.devel").is_file():
 
     env.read_env(env.str("ENV_FILE", BASE_DIR / "config" / ".env.devel"))
@@ -186,7 +175,6 @@ elif Path(BASE_DIR / "config" / ".env.devel").is_file():
     STATIC_URL = env("STATIC_URL")
 
     # Logging Configuration
-
     # Clear prev config
     LOGGING_CONFIG = None
 
@@ -224,6 +212,17 @@ elif Path(BASE_DIR / "config" / ".env.devel").is_file():
         MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
         STATIC_URL = "static/"
         INTERNAL_IPS = ["127.0.0.1",]
+
+# Base URL to use when referring to full URLs within the Wagtail admin backend -
+# e.g. in notification emails. Don't include '/admin' or a trailing slash
+WAGTAILADMIN_BASE_URL = env("WAGTAILADMIN_BASE_URL")
+
+# Allowed file extensions for documents in the document library.
+# This can be omitted to allow all files, but note that this may present a security risk
+# if untrusted users are allowed to upload files -
+# see https://docs.wagtail.org/en/stable/advanced_topics/deploying.html#user-uploaded-files
+WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

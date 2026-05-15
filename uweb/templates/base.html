@@ -82,5 +82,15 @@
         {% block extra_js %}
         {# Override this in templates to add extra javascript #}
         {% endblock %}
+        <script type="text/javascript">
+            window.addEventListener('load', () => {
+                /* Move back-to-top button to left */
+                let backtotop = document.querySelector('.back-to-top')
+                let wagtailuserbar = document.querySelector('wagtail-userbar')
+                if (backtotop && wagtailuserbar) {
+                    backtotop.style.right="6em";
+                }
+            })
+        </script>
     </body>
 </html>
