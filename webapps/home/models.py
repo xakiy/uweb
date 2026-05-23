@@ -33,6 +33,11 @@ from wagtail.search import index
 
 
 class HomePage(Page):
+
+    class Meta:
+        verbose_name = "Laman"
+        verbose_name_plural = "Laman-laman"
+
     body = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [

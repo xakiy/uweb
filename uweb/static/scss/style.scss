@@ -17,14 +17,25 @@ section + section {
   margin-top: 0;
 }
 
-#main-header {
-  margin-top: 5px;
-  margin-bottom: 5px;
+#topbar {
+  // background: rgba(25, 25, 25, 0.4) 0 0/200px url('../images/background.jpg') repeat;
+  font-size: 1em;
+  height: 1.5em;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+  // color: rgba(255, 255, 255, 0.6);
 }
 
-#main-header #primary-navigation .container-fluid {
-  padding-left: 2px !important;
-  padding-right: 2px !important;
+header {
+  position: sticky;
+  top: 0;
+}
+
+#main-header {
+  margin-bottom: 5px;
+  background-color: var(--bs-body-bg);
+  transition: 0.4s background;
 }
 
 #main-hero {
@@ -411,6 +422,7 @@ footer {
 	20%, 40%, 60%, 80% {transform: translateX(2px);}
 }
 
-aside div.w-userbar.w-userbar--bottom-right {
-    inset-inline-end: 6em !important;
-}
+// wagtail-userbar::part(userbar) {
+//     bottom: 1.8em;
+//     inset-inline-end: 7em;
+// }

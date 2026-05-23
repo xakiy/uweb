@@ -1,22 +1,35 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags navigation_tags %}
 
 {% block content %}
 
+            <section class="jumbotron text-center">
+                 <h2 class="display-3">{{ page.title }}</h2>
+                 <p class="lead">{{ page.intro|richtext }}</p>
+            </section>
+
             <section>
                 <div class="container">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
 
-                    <h2>{{ page.title }}</h2>
+                        {% for post in blogpages %}
+                        <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <small class="card-date d-block text-end"><i class="fa-regular fa-clock"></i> {{ post.specific.date }}</small>
+                                <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+                                {{ post.specific.intro }}
+                                {{ post.specific.body|richtext }}
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0 mb-2">
+                                <a href="{{ item.permalink }}" class="btn btn-outline-success btn-sm">Read More</a>
+                            </div>
+                        </div>
+                        </div>
+                        {% endfor %}
 
-                    <div class="intro">{{ page.intro|richtext }}</div>
-
-                    {% for post in blogpages %}
-                        <h3><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-                        <p>{{ post.specific.date }}</p>
-                        {{ post.specific.intro }}
-                        {{ post.specific.body|richtext }}
-                    {% endfor %}
+                    </div>
 
                     <p><a href="{{ page.get_parent.url }}">Return to home</a></p>
 

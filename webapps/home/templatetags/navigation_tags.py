@@ -124,3 +124,40 @@ def get_social_media_link():
         }
     else:
         return None
+
+
+@register.simple_tag
+def current_domain():
+    return Site.objects.get_current().domain
+
+
+@register.filter(name='add_class')
+def add_class(field, classname):
+# def add_class(value, arg):
+#     return value.as_widget(attrs={'class': arg})
+    """
+    Adds a class to a form field
+    Example usage: {{ form.field|add_class:'form-control' }}
+    """
+    try:
+        field.field.widget.attrs['class'] += ' %s' % classname
+    except KeyError:
+        field.field.widget.attrs['class'] = classname
+    return field.as_widget()
+
+
+@register.filter(name='add_attr')
+def add_attr(field, css):
+    attrs = {}
+    definition = css.split(',')
+
+    print(field)
+
+    for d in definition:
+        if ':' not in d:
+            attrs['class'] = d
+        else:
+            key, val = d.split(':')
+            attrs[key] = val
+
+    return field.as_widget(attrs=attrs)

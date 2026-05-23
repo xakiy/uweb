@@ -7,6 +7,11 @@ from wagtail.search import index
 
 
 class BlogIndexPage(Page):
+
+    class Meta:
+        verbose_name = "Koleksi Artikel"
+        verbose_name_plural = "Koleksi-koleksi"
+
     intro = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [
@@ -21,6 +26,11 @@ class BlogIndexPage(Page):
 
 
 class BlogPage(Page):
+
+    class Meta:
+        verbose_name = "Artikel"
+        verbose_name_plural = "Artikel-artikel"
+
     date = models.DateField("Post date")
     intro = models.CharField(max_length=250)
     body = RichTextField(blank=True)
