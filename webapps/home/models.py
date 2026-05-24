@@ -278,9 +278,16 @@ class SiteSettings(BaseSiteSetting):
         blank=True
     )
 
+    site_location_map = models.TextField(
+        verbose_name="Map Location",
+        help_text="Map pointing to your office.",
+        blank=True
+    )
+
     panels = [
         FieldPanel("site_suffix"),
         FieldPanel("site_logo"),
         FieldPanel("site_description"),
-        FieldPanel("site_address")
+        FieldPanel("site_address"),
+        FieldPanel("site_location_map"),
     ]

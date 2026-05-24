@@ -28,14 +28,13 @@ section + section {
 }
 
 header {
-  position: sticky;
-  top: 0;
+  height: 100%;
 }
 
 #main-header {
   margin-bottom: 5px;
   background-color: var(--bs-body-bg);
-  transition: 0.4s background;
+  transition: 1s all ease;
 }
 
 #main-hero {

@@ -1,17 +1,17 @@
 /**
  * Header fixed top on scroll
  */
-let selectHeader = document.querySelector('#header');
+let selectHeader = document.querySelector('#main-header');
 if (selectHeader) {
-  let headerOffset = selectHeader.offsetTop
-  let nextElement = selectHeader.nextElementSibling
+  let breadcrumbDiv = document.querySelector('#main-breadcrumb')
+  const scrollHeight = breadcrumbDiv.offsetTop
   const headerFixed = () => {
-    if ((headerOffset - window.scrollY) <= 0) {
-      selectHeader.classList.add('fixed-top')
-      nextElement.classList.add('scrolled-offset')
+    if (window.scrollY > scrollHeight) {
+      selectHeader.classList.add('fixed-top', 'shadow-sm');
+      breadcrumbDiv.style.paddingTop=scrollHeight+"px";
     } else {
-      selectHeader.classList.remove('fixed-top')
-      nextElement.classList.remove('scrolled-offset')
+      selectHeader.classList.remove('fixed-top', 'shadow-sm')
+      breadcrumbDiv.style.paddingTop=0;
     }
   }
   window.addEventListener('load', headerFixed)
