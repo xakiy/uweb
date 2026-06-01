@@ -8,6 +8,10 @@ $lg: 992px;
 $xl: 1200px;
 $xxl: 1400px;
 
+html {
+    scroll-behavior: smooth;
+}
+
 section {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -27,14 +31,14 @@ section + section {
   // color: rgba(255, 255, 255, 0.6);
 }
 
-header {
-  height: 100%;
-}
-
 #main-header {
   margin-bottom: 5px;
   background-color: var(--bs-body-bg);
-  transition: 1s all ease;
+  transition: .3s all ease;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0px;
+  z-index: 9999;
 }
 
 #main-hero {
