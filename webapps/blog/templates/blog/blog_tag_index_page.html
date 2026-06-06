@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+
+{% block content %}
+
+            <section class="jumbotron text-center">
+                {% if request.GET.tag %}
+                    <h2>Showing pages tagged:</h2>
+                    <h2>&ldquo;{{ request.GET.tag }}&rdquo;</h2>
+                    <blockquote class="blockquote">{{ request.GET.tag }}</blockquote>
+                {% endif %}
+            </section>
+
+            <section>
+                <div class="container">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+
+                        {% for blogpage in blogpages %}
+
+                        <p>
+                            <strong><a href="{% pageurl blogpage %}">{{ blogpage.title }}</a></strong><br />
+                            <small>Revised: {{ blogpage.latest_revision_created_at }}</small><br />
+                        </p>
+
+                        {% empty %}
+
+                        <p>No pages found with that tag.</p>
+
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </section>
+
+{% endblock %}
