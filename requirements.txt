@@ -3,3 +3,5 @@ wagtail==7.4
 django-environ==0.13
 fontawesomefree==6.6.0
 wagtail-font-awesome-svg==2.0
+wagtailmenus==4.0.7
+

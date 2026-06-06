@@ -1,4 +1,4 @@
-@import url('theme.css');
+@import url('theme.min.css');
 
 
 // SCSS variables
@@ -7,6 +7,37 @@ $md: 768px;
 $lg: 992px;
 $xl: 1200px;
 $xxl: 1400px;
+
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+body {
+  font-family: "Amiri", "Open Sans", sans-serif;
+  color: var(--bs-body-color);
+  background-color: var(--uw-wall-color);
+}
+
+a {
+  color: var(--bs-link-color) !important;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--bs-link-hover-color) !important;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Nunito Sans", sans-serif;
+}
+
+.arab{
+  font-size: 1.2rem;
+  line-height: 2em;
+  font-family: "LPMQ", "Amiri", Tahoma, sans-serif;
+  text-align: right;
+  direction: rtl;
+}
 
 html {
     scroll-behavior: smooth;
@@ -22,9 +53,9 @@ section + section {
 }
 
 #topbar {
-  // background: rgba(25, 25, 25, 0.4) 0 0/200px url('../images/background.jpg') repeat;
-  font-size: 1em;
-  height: 1.5em;
+  background-color: var(--bs-body-bg-tint);
+  font-size: .875em;
+  height: 2.6em;
   margin-top: 0;
   margin-bottom: 0;
   padding: 0;
@@ -53,8 +84,6 @@ section + section {
     }
     a {
         font-weight: 500;
-        color: #000 !important;
-        opacity: .5;
         -webkit-transition: .3s all ease;
         -o-transition: .3s all ease;
         transition: .3s all ease;
@@ -83,7 +112,7 @@ section + section {
         content: "";
         position: absolute;
         bottom: 0;
-        background-color: var(--bs-accent-primary);;
+        background-color: var(--bs-main-tertiary); /* underline */
         height: 4px;
         opacity: 1;
         visibility: visible;
@@ -107,13 +136,13 @@ section + section {
             margin: 0;
             padding: 0 0 .5rem 0;
             font-weight: 400;
-            color: var(--bs-dropdown-link-color);
+            color: var(--bs-link-color);
             text-align: inherit;
             text-decoration: none;
             white-space: nowrap;
             background-color: transparent;
             border: 0;
-            border-radius: var(--bs-dropdown-item-border-radius,0);
+            border-radius: var(--bs-dropdown-item-border-radius, 0);
             &.active {
               opacity: 1;
               &::before {
@@ -136,11 +165,11 @@ section + section {
   }
   margin-top: 0 !important;
   .breadcrumb {
-    background: linear-gradient(to right, var(--bs-accent-secondary) 50%, #ffffff00);
+    background: linear-gradient(to right, var(--bs-main-quarterly) 50%, #ffffff00);
     li.breadcrumb-item > a {
       text-decoration: none !important;
       font-weight: 600 !important;
-      color: var(--bs-dropdown-link-color);
+      color: var(--bs-link-color);
       opacity: .7;
       svg {
         vertical-align: unset;
@@ -182,92 +211,12 @@ section + section {
   height: auto;
 }
 
-#featured-with-icons {
-    a {
-        text-decoration: none;
-        &:hover {
-            color: var(--bs-main-primary);
-        }
-    }
-}
-
-#clients {
-    .splide__track {
-        background-color: var(--bs-body-bg-tint);
-    }
-}
-
-//  Pricing Header
-
-#pricing-header {
-    .card {
-        transition: all .5s ease-in-out;
-    }
-    .card-header {
-        background-color: var(--bs-accent-primary);
-        transition: all .5s ease-in-out;
-    }
-    .card:hover {
-        border-color: var(--bs-accent-primary);
-        box-shadow: var(--bs-box-shadow-lg) !important;
-        .card-header {
-            background-color: var(--bs-main-primary);
-        }
-    }
-    .pricing-card-title {
-        font-size:xx-large;
-        color: var(--bs-main-primary);
-        > span.small {
-            font-size: medium;
-        }
-        > span.small-sub {
-            font-size: smaller;
-            font-variant-position: sub;
-        }
-        > span.small-super {
-            font-size: x-large;
-            font-variant-position: super;
-        }
-        span.currency {
-            color: var(--bs-gray-600);
-            font-size: x-large;
-            font-variant-position: super;
-
-        }
-        // &:after {
-        //     content: "/ tahun";
-        //     font-size: large;
-        //     font-variant-position: sub;
-        // }
-        // span:nth-last-of-type(1) {
-        //     color: var(--bs-gray-800);
-        //     font-variant-position: super;
-        // }
-    }
-}
-
 #footer-logo-image {
     width: 3rem;
     height: auto;
     vertical-align: middle;
     margin-right: 5px;
     border-radius: 4px;
-}
-
-.feature-icon {
-    width: 4rem;
-    height: 4rem;
-    border-radius: .75rem;
-}
-
-#main-benefits {
-    .icon-square {
-        width: 3rem;
-        height: 3rem;
-        border-radius: .75rem;
-        background-color: var(--bs-accent-primary);
-        box-shadow: 0 8px 20px rgba(0,0,0,.3);
-    }
 }
 
 footer {
@@ -280,7 +229,7 @@ footer {
   .copyright {
     margin-top: 1.5rem;
     margin-bottom: 1.3rem;
-    border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+    border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
     padding-top: 1em;
     text-align: center;
     > p {
@@ -300,7 +249,7 @@ footer {
   .footer-nav-link{
       text-decoration: none;
       &:hover {
-          color: var(--bs-main-primary) !important;
+          color: inherit;
       }
   }
   address {
@@ -328,7 +277,7 @@ footer {
           border-radius: 7px;
           box-shadow: 0 8px 20px rgba(0,0,0,.3);
           color: #777;
-          background-color: var(--bs-accent-primary);
+          background-color: var(--bs-main-tertiary);
           text-decoration: none;
           transition: all .5s;
           &:hover {
@@ -366,7 +315,7 @@ footer {
     font-size: 1rem;
     border-radius: 7px;
     box-shadow: 0 8px 20px rgba(0,0,0,.3);
-    background: var(--bs-accent-primary);
+    background: var(--bs-main-tertiary);
     transition: all .5s;
     @media (max-width: $md) {
       bottom: 1.5em;

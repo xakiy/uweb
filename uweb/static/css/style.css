@@ -1,4 +1,60 @@
 @import url("theme.css");
+/*--------------------------------------------------------------
+# Fontface
+--------------------------------------------------------------*/
+/* arabic */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/amiri/v17/J7aRnpd8CGxBHpUrtLMA7w.woff2) format("woff2");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
+/* arabic */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/amiri/v17/J7acnpd8CGxBHp2VkaY6zp5yGw.woff2) format("woff2");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
+/* arabic */
+@font-face {
+  font-family: 'LPMQ';
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url("../fonts/lpmq.eot");
+  src: local("?"), url("../fonts/lpmq.eot?#iefix") format("embedded-opentype"), url("../fonts/lpmq.woff") format("woff"), url("../fonts/lpmq.ttf") format("truetype");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+body {
+  font-family: "Amiri", "Open Sans", sans-serif;
+  color: #444444; }
+
+a {
+  color: var(--bs-link-color) !important;
+  text-decoration: none; }
+
+a:hover {
+  color: var(--bs-link-hover-color) !important;
+  text-decoration: none; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Nunito Sans", sans-serif; }
+
+.arab {
+  font-size: 1.2rem;
+  line-height: 2em;
+  font-family: "LPMQ", "Amiri", Tahoma, sans-serif;
+  text-align: right;
+  direction: rtl; }
+
 html {
   scroll-behavior: smooth; }
 
@@ -10,8 +66,9 @@ section + section {
   margin-top: 0; }
 
 #topbar {
-  font-size: 1em;
-  height: 1.5em;
+  background-color: var(--bs-body-bg-tint);
+  font-size: .875em;
+  height: 2.6em;
   margin-top: 0;
   margin-bottom: 0;
   padding: 0; }
@@ -32,8 +89,6 @@ section + section {
   margin: 0 1rem; }
 #main-navbar .navbar-nav li a {
   font-weight: 500;
-  color: #000 !important;
-  opacity: .5;
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease;
@@ -72,7 +127,7 @@ section + section {
     margin: 0;
     padding: 0 0 .5rem 0;
     font-weight: 400;
-    color: var(--bs-dropdown-link-color);
+    color: var(--bs-link-color);
     text-align: inherit;
     text-decoration: none;
     white-space: nowrap;
@@ -97,7 +152,7 @@ section + section {
     #main-breadcrumb .breadcrumb li.breadcrumb-item > a {
       text-decoration: none !important;
       font-weight: 600 !important;
-      color: var(--bs-dropdown-link-color);
+      color: var(--bs-link-color);
       opacity: .7;
       transition: .15s opacity ease; }
       #main-breadcrumb .breadcrumb li.breadcrumb-item > a svg {
@@ -125,58 +180,12 @@ section + section {
   width: 100%;
   height: auto; }
 
-#featured-with-icons a {
-  text-decoration: none; }
-  #featured-with-icons a:hover {
-    color: var(--bs-main-primary); }
-
-#clients .splide__track {
-  background-color: var(--bs-body-bg-tint); }
-
-#pricing-header .card {
-  transition: all .5s ease-in-out; }
-#pricing-header .card-header {
-  background-color: var(--bs-accent-primary);
-  transition: all .5s ease-in-out; }
-#pricing-header .card:hover {
-  border-color: var(--bs-accent-primary);
-  box-shadow: var(--bs-box-shadow-lg) !important; }
-  #pricing-header .card:hover .card-header {
-    background-color: var(--bs-main-primary); }
-#pricing-header .pricing-card-title {
-  font-size: xx-large;
-  color: var(--bs-main-primary); }
-  #pricing-header .pricing-card-title > span.small {
-    font-size: medium; }
-  #pricing-header .pricing-card-title > span.small-sub {
-    font-size: smaller;
-    font-variant-position: sub; }
-  #pricing-header .pricing-card-title > span.small-super {
-    font-size: x-large;
-    font-variant-position: super; }
-  #pricing-header .pricing-card-title span.currency {
-    color: var(--bs-gray-600);
-    font-size: x-large;
-    font-variant-position: super; }
-
 #footer-logo-image {
   width: 3rem;
   height: auto;
   vertical-align: middle;
   margin-right: 5px;
   border-radius: 4px; }
-
-.feature-icon {
-  width: 4rem;
-  height: 4rem;
-  border-radius: .75rem; }
-
-#main-benefits .icon-square {
-  width: 3rem;
-  height: 3rem;
-  border-radius: .75rem;
-  background-color: var(--bs-accent-primary);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 
 footer section {
   margin-top: 3rem; }
@@ -200,7 +209,7 @@ footer .footer-nav-item {
 footer .footer-nav-link {
   text-decoration: none; }
   footer .footer-nav-link:hover {
-    color: var(--bs-main-primary) !important; }
+    color: inherit; }
 footer address {
   padding-left: 22.5px;
   text-indent: -10.5px; }

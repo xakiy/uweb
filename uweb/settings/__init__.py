@@ -244,7 +244,8 @@ MEDIA_ROOT = env("MEDIA_ROOT")
 WAGTAIL_SITE_NAME = env("SITE_NAME")
 
 try:
-    from .addons import ADDON_APPS
+    from .addons import ADDON_APPS, ADDON_TEMPLATES, merge_template_configs
     INSTALLED_APPS = ADDON_APPS + INSTALLED_APPS
+    TEMPLATES = merge_template_configs(TEMPLATES, ADDON_TEMPLATES)
 except ImportError:
     pass

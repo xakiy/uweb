@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load wagtailcore_tags navigation_tags %}
+{% load wagtailcore_tags navigation_tags wagtailimages_tags %}
 
 {% block content %}
 
@@ -19,11 +19,14 @@
                             <div class="card-body">
                                 <small class="card-date d-block text-end"><i class="fa-regular fa-clock"></i> {{ post.specific.date }}</small>
                                 <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+                                {% with post.main_image as main_image %}
+                                    {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+                                {% endwith %}
                                 {{ post.specific.intro }}
                                 {{ post.specific.body|richtext }}
                             </div>
                             <div class="card-footer bg-transparent border-top-0 mb-2">
-                                <a href="{{ item.permalink }}" class="btn btn-outline-success btn-sm">Read More</a>
+                                <a href="{{ item.permalink }}" class="btn btn-sm">Read More</a>
                             </div>
                         </div>
                         </div>

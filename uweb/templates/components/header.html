@@ -23,8 +23,8 @@
                 {% top_menu parent=site_root calling_page=self %}
               </ul>
 
-              <form class="d-flex" role="search" action="/search" method="get">
-                <input class="form-control me-2" type="search" placeholder="Search" autocomplete="off" name="q" aria-label="Search">
+              <form class="d-flex" role="search" action="{% url 'search' %}" method="get">
+                <input class="form-control me-2" type="search" placeholder="Search" autocomplete="off" name="query" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
               </form>
 

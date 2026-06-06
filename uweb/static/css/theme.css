@@ -5,8 +5,14 @@
   --bs-accent-secondary: #FDE49E;
   --bs-primary: var(--bs-main-primary);
   --bs-secondary: var(--bs-main-secondary);
-  --bs-body-bg: #eef7ff;
-  --bs-body-bg-rgb: 238, 247, 255;
+  --bs-body-bg: #f2e8cf;
+  --bs-body-bg-rgb: 242, 232, 207;
   --bs-body-bg-tint: #dbe9f5;
   --bs-body-bg-tint-rgb: 202, 219, 235;
-}
+  --bs-link-color: #386641;
+  --bs-link-color-rgb: 56, 102, 65;
+  --bs-link-decoration: none;
+  --bs-link-hover-color: #6a994e;
+  --bs-link-hover-color-rgb: 106, 153, 78; }
+
+/*# sourceMappingURL=theme.css.map */
