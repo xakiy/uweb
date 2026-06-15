@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtail.locales",
     "wagtail",
 
     "modelcluster",
@@ -74,6 +75,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "django.template.context_processors.i18n",
                 "wagtail.contrib.settings.context_processors.settings",
             ],
         },
@@ -102,14 +104,25 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "id-ID"
 
 TIME_ZONE = "Asia/Makassar"
 
 USE_I18N = True
 
+WAGTAIL_I18N_ENABLED = True
+
 USE_TZ = True
 
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ('id-ID', "Bahasa Indonesia"),
+    ('en-ID', "English (Indonesia)"),
+    ('en-GB', "English (Great Britain)"),
+    ('en-US', "English (United States)"),
+    ('en-CA', "English (Canada)"),
+    ('fr-FR', "French (France)"),
+    ('fr-CA', "French (Canada)"),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

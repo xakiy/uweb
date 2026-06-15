@@ -1,5 +1,36 @@
 @import url('theme.min.css');
 
+/*--------------------------------------------------------------
+# Fontface
+--------------------------------------------------------------*/
+/* arabic */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/amiri/v17/J7aRnpd8CGxBHpUrtLMA7w.woff2) format("woff2");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
+/* arabic */
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 700;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/amiri/v17/J7acnpd8CGxBHp2VkaY6zp5yGw.woff2) format("woff2");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
+/* arabic */
+@font-face {
+  font-family: 'LPMQ';
+  font-style: normal;
+  font-weight: 400;
+  size-adjust: 105%;
+  font-display: swap;
+  src: url("../fonts/lpmq.eot");
+  src: local("?"), url("../fonts/lpmq.eot?#iefix") format("embedded-opentype"), url("../fonts/lpmq.woff") format("woff"), url("../fonts/lpmq.ttf") format("truetype");
+  unicode-range: U+0026, U+0600-06FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE80-FEFC; }
 
 // SCSS variables
 $sm: 576px;
@@ -12,9 +43,12 @@ $xxl: 1400px;
 # General
 --------------------------------------------------------------*/
 body {
-  font-family: "Amiri", "Open Sans", sans-serif;
+  font-family: "Amiri", "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color: var(--bs-body-color);
   background-color: var(--uw-wall-color);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
 }
 
 a {
@@ -203,12 +237,63 @@ section + section {
     border-radius: 5px;
 }
 
-#main-content .container .post > img {
-  // max-height: 100%;
-  // max-width: 100%;
-  object-fit: contain;
-  width:100%;
-  height: auto;
+
+#main-content {
+  section .container {
+    .card {
+      img.card-thumbnail {
+        border-radius: 3px;
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 1rem auto;
+      }
+    }
+    img.richtext-image {
+      border-radius: 0.5rem;
+      &.left {
+        width: 50% !important;
+        float: left;
+        height: fit-content;
+        margin-right: 1rem;
+      }
+      &.right {
+        width: 50% !important;
+        float: right;
+        height: fit-content;
+        margin-left: 1rem;
+      }
+      &.full-width {
+          object-fit: contain;
+          width:100%;
+          height: fit-content;
+          margin-bottom: 1rem;
+          margin-top: 1rem;
+      }
+    }
+    figure {
+      img.figure-gallery {
+        border-radius: 3px;
+      }
+      figcaption.figure-caption {
+        font-size: .875em;
+        color: #6c757d;
+      }
+    }
+  }
+}
+
+.search-page {
+  // .card-title {
+  //   white-space: nowrap;
+  //   text-overflow: ellipsis;
+  //   overflow: hidden;
+  // }
+  .btn-success {
+    background-image: var(--bs-gradient);
+    border-color: #5bc142;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 1px rgba(0, 0, 0, 0.075);
+  }
 }
 
 #footer-logo-image {
@@ -221,8 +306,14 @@ section + section {
 
 footer {
   section {
-    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
   }
+  // hr.liner {
+  //   border: 0;
+  //   height: 1px;
+  //   background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  // }
   .fa-solid, .fa-regular, .fa-brands {
     padding-right: .5rem;
   }

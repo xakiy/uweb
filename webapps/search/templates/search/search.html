@@ -3,54 +3,76 @@
 
 {% block body_class %}template-searchresults{% endblock %}
 
-{% block title %}Search{% endblock %}
+{% block title %}Pencarian{% endblock %}
 
 {% block content %}
 
-            <section>
+            <section class="search-page">
 
                 <div class="container">
 
-                    <div class="d-flex align-items-center justify-content-center" style="height: 7vh">
-
-                        <h1 class="p-3">Search</h1>
-
-                        <form action="{% url 'search' %}" method="get">
-                            <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-                            <input type="submit" value="Search" class="button">
-                        </form>
-
+                <div class="search-header">
+                <h1>Pencarian </h1>
+                <form action="{% url 'search' %}" method="get" class="my-2">
+                  <div class="row g-3 align-items-center">
+                    <div class="col-auto">
+                      <input
+                        class="form-control me-2"
+                        type="text"
+                        name="query"
+                        placeholder="Type to search…"
+                        {% if search_query %}value="{{ search_query }}"{% endif %}
+                      >
                     </div>
+                    <div class="col-auto">
+                      <button type="submit" class="btn btn-success">Cari</button>
+                    </div>
+                  </div>
+                </form>
+                </div>
 
                 {% if search_results %}
 
-                    <ul>
-                        {% for result in search_results %}
-                        <li>
-                            <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
+                  <p class="result-count">
+                    Menemukan {{ search_results|length }} hasil dari kata kunci: &ldquo;<strong>{{ search_query }}</strong>&rdquo;
+                  </p>
+
+                  <div class="row row-cols-md-3 g-3">
+                    {% for result in search_results %}
+                    <div class="col">
+                      <div class="card border rounded-3 h-100">
+                        <div class="card-body">
+                            <h2 class="card-title mb-3"><a href="{% pageurl result %}">{{ result }}</a></h2>
                             {% if result.search_description %}
-                            {{ result.search_description }}
+                              <p class="result-excerpt">{{ result.search_description }}</p>
                             {% endif %}
-                        </li>
-                        {% endfor %}
-                    </ul>
+                        </div>
+                        <div class="card-footer"><a href="{% pageurl result %}" class="btn btn-sm">Read more →</a>
+                        </div>
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
 
+                  <nav class="pagination">
                     {% if search_results.has_previous %}
-                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
+                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&page={{ search_results.previous_page_number }}"
+                       class="pagination-btn">← Previous</a>
                     {% endif %}
-
                     {% if search_results.has_next %}
-                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
+                    <a href="{% url 'search' %}?query={{ search_query|urlencode }}&page={{ search_results.next_page_number }}"
+                       class="pagination-btn">Next →</a>
                     {% endif %}
+                  </nav>
 
                 {% elif search_query %}
-
-                    <p>No results found</p>
-
+                  <div class="no-results">
+                    <p>No results found for <strong>"{{ search_query }}"</strong></p>
+                    <p class="no-results-hint">Try different keywords or check your spelling.</p>
+                  </div>
                 {% endif %}
 
                 </div>
-
             </section>
 
 {% endblock %}

@@ -81,6 +81,7 @@ class BlogPage(Page):
             return None
 
     search_fields = Page.search_fields + [
+        index.SearchField('search_description'),
         index.SearchField("intro"),
         index.SearchField("body"),
     ]

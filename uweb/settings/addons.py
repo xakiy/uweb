@@ -24,7 +24,7 @@ ADDON_TEMPLATES = [
 def merge_template_configs(base, addon):
     """Deep merge addon template configs into base templates list."""
     result = [dict(t) for t in base]
-    
+
     for addon_tmpl in addon:
         # Find matching backend or use first entry as default
         backend = addon_tmpl.get("BACKEND")
@@ -32,7 +32,7 @@ def merge_template_configs(base, addon):
             (t for t in result if t.get("BACKEND") == backend),
             result[0]  # fallback to first template config
         )
-        
+
         for key, value in addon_tmpl.items():
             if key not in target:
                 target[key] = value
@@ -47,6 +47,6 @@ def merge_template_configs(base, addon):
                             item for item in subvalue
                             if item not in target[key][subkey]
                         ]
-    
+
     return result
 

@@ -1,7 +1,7 @@
-{% load static navigation_tags wagtailcore_tags wagtailuserbar %}
+{% load i18n static navigation_tags wagtailcore_tags wagtailuserbar %}
 
 <!doctype html>
-<html lang="id">
+<html lang="{{ LANGUAGE_CODE }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -76,7 +76,7 @@
         {% endblock breadcrumbs %}
 
 
-        <main>
+        <main id="main-content">
 
             {% block content %}{% endblock %}
 

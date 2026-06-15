@@ -6,9 +6,8 @@
 
             <section class="jumbotron text-center">
                 {% if request.GET.tag %}
-                    <h2>Showing pages tagged:</h2>
+                    <h2>Menampilkan artikel dengan tagar:</h2>
                     <h2>&ldquo;{{ request.GET.tag }}&rdquo;</h2>
-                    <blockquote class="blockquote">{{ request.GET.tag }}</blockquote>
                 {% endif %}
             </section>
 

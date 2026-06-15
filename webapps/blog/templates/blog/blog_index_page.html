@@ -10,30 +10,28 @@
             </section>
 
             <section>
-                <div class="container">
+                <div class="container blog-index">
                     <div class="row row-cols-1 row-cols-md-3 g-4">
 
                         {% for post in blogpages %}
                         <div class="col">
-                        <div class="card h-100">
+                        <div class="card border rounded-3 h-100">
                             <div class="card-body">
-                                <small class="card-date d-block text-end"><i class="fa-regular fa-clock"></i> {{ post.specific.date }}</small>
                                 <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+                                <small class="card-date d-block text-end"><i class="fa-regular fa-calendar"></i> {{ post.specific.date }}</small>
                                 {% with post.main_image as main_image %}
-                                    {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+                                    {% if main_image %}{% image main_image fill-260x150 class="card-thumbnail" %}{% endif %}
                                 {% endwith %}
                                 {{ post.specific.intro }}
-                                {{ post.specific.body|richtext }}
                             </div>
                             <div class="card-footer bg-transparent border-top-0 mb-2">
-                                <a href="{{ item.permalink }}" class="btn btn-sm">Read More</a>
+                                <a href="{% pageurl post %}" class="btn btn-sm">Read More</a>
                             </div>
                         </div>
                         </div>
                         {% endfor %}
 
                     </div>
-
                     <p><a href="{{ page.get_parent.url }}">Return to home</a></p>
 
                 </div>
