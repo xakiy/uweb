@@ -252,20 +252,20 @@ section + section {
     img.richtext-image {
       border-radius: 0.5rem;
       &.left {
-        width: 50% !important;
+        width: 380px !important;
         float: left;
         height: fit-content;
         margin-right: 1rem;
       }
       &.right {
-        width: 50% !important;
+        width: 380px !important;
         float: right;
         height: fit-content;
         margin-left: 1rem;
       }
       &.full-width {
           object-fit: contain;
-          width:100%;
+          width:420px;
           height: fit-content;
           margin-bottom: 1rem;
           margin-top: 1rem;

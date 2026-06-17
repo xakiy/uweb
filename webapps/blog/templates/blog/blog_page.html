@@ -10,7 +10,7 @@
 
                     <h2>{{ page.title }}</h2>
 
-                    <p class="meta">{{ page.date }}</p>
+                    <p class="meta"><small class="text-end"><i class="fa-regular fa-calendar"></i> {{ page.date }}</small></p>
 
                     {% with authors=page.authors.all %}
                         {% if authors %}
