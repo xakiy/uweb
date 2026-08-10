@@ -272,12 +272,20 @@ section + section {
       }
     }
     figure {
-      img.figure-gallery {
-        border-radius: 3px;
-      }
+      width: 100%;
+      max-width: 100%;
+      margin-right: calc(var(--bs-gutter-x) * .5);
+      margin-left: calc(var(--bs-gutter-x) * .5);
+      margin-top: var(--bs-gutter-y);
+      padding: 0;
+      overflow: hidden;
+      border-radius: 3px;
       figcaption.figure-caption {
         font-size: .875em;
         color: #6c757d;
+        font-style: italic;
+        background-color: #9973731f;
+        padding: .3em .8em .2em .8em;
       }
     }
   }
