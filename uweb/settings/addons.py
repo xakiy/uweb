@@ -7,16 +7,16 @@ ADDON_APPS = [
 
     "fontawesomefree",
     "wagtailfontawesomesvg",
-    "wagtailmenus",
+    # "wagtailmenus",
 ]
 
 ADDON_TEMPLATES = [
     {
-        'OPTIONS': {
-            'context_processors': [
-                'wagtailmenus.context_processors.wagtailmenus',
-            ]
-        }
+        # 'OPTIONS': {
+        #     'context_processors': [
+        #         'wagtailmenus.context_processors.wagtailmenus',
+        #     ]
+        # }
      }
 ]
 

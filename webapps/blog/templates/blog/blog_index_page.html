@@ -17,11 +17,11 @@
                         <div class="col">
                         <div class="card border rounded-3 h-100">
                             <div class="card-body">
-                                <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-                                <small class="card-date d-block text-end"><i class="fa-regular fa-calendar"></i> {{ post.specific.date }}</small>
+                                <small class="card-date d-block text-start"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ post.specific.date }}</small>
                                 {% with post.main_image as main_image %}
                                     {% if main_image %}{% image main_image fill-260x150 class="card-thumbnail" %}{% endif %}
                                 {% endwith %}
+                                <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
                                 {{ post.specific.intro }}
                             </div>
                             <div class="card-footer bg-transparent border-top-0 mb-2">

@@ -14,6 +14,10 @@ from taggit.models import TaggedItemBase
 
 class BlogTagIndexPage(Page):
 
+    class Meta:
+        verbose_name = "Indeks Tagar"
+        verbose_name_plural = "Indeks Tagar-tagar"
+
     def get_context(self, request):
 
         # Filter by tag
@@ -56,12 +60,16 @@ class BlogIndexPage(Page):
         if tag:
             blogpages = BlogPage.objects.filter(tags__name=tag)
         else:
-            blogpages = BlogPage.objects.live().order_by("-date")
+            blogpages = BlogPage.objects.descendant_of(self).live().order_by("-date")
+            
 
         # Update template context
         context = super().get_context(request)
         context['blogpages'] = blogpages
         return context
+
+    parent_page_types = ["home.HomePage", "blog.BlogIndexPage"]
+    subpage_types = ["blog.BlogIndexPage", "blog.BlogPage"]
 
 
 class BlogPage(Page):
@@ -97,6 +105,9 @@ class BlogPage(Page):
             "tags"], heading="Blog information"),
         "intro", "body", "gallery_images"
     ]
+
+    parent_page_types = ["blog.BlogIndexPage"]
+    subpage_types = []
 
 
 class BlogPageGalleryImage(Orderable):

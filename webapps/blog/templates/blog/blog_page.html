@@ -10,7 +10,7 @@
 
                     <h2>{{ page.title }}</h2>
 
-                    <p class="meta"><small class="text-end"><i class="fa-regular fa-calendar"></i> {{ page.date }}</small></p>
+                    <p class="meta"><small class="text-end"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ page.date }}</small></p>
 
                     {% with authors=page.authors.all %}
                         {% if authors %}
@@ -32,10 +32,12 @@
 
                     <div class="row g-3 my-3 gallery-images">
                     {% for item in page.gallery_images.all %}
-                        <figure class="col">
-                            {% image item.image fill-320x240 class="figure-gallery" %}
-                            {% if item.caption %} <figcaption class="figure-caption">{{ item.caption }}</figcaption> {% endif %}
-                        </figure>
+                        <div class="col">
+                            <figure>
+                                {% image item.image fill-320x240 class="figure-gallery" %}
+                                {% if item.caption %} <figcaption class="figure-caption">{{ item.caption }}</figcaption> {% endif %}
+                            </figure>
+                        </div>
                     {% endfor %}
                     </div>
 
@@ -46,7 +48,7 @@
                     <div class="tags">
                         <h3>Tagar</h3>
                         {% for tag in tags %}
-                            <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button type="button">{{ tag }}</button></a>
+                            <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button class="btn btn-outline-success">{{ tag }}</button></a>
                         {% endfor %}
                     </div>
                         {% endif %}

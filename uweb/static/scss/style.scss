@@ -232,7 +232,7 @@ section + section {
 #header-logo-image {
     width: 3rem;
     height: auto;
-    vertical-align: top;
+    vertical-align: middle;
     margin-right: 3px;
     border-radius: 5px;
 }
@@ -268,24 +268,30 @@ section + section {
           width:420px;
           height: fit-content;
           margin-bottom: 1rem;
-          margin-top: 1rem;
+          margin-top: 0;
       }
     }
     figure {
-      width: 100%;
+      display: grid;
+      grid-template-columns: min-content; /* Shrinks the grid column to the absolute minimum width needed */
+      width: min-content;
       max-width: 100%;
       margin-right: calc(var(--bs-gutter-x) * .5);
       margin-left: calc(var(--bs-gutter-x) * .5);
       margin-top: var(--bs-gutter-y);
       padding: 0;
-      overflow: hidden;
-      border-radius: 3px;
+      border-radius: 5px;
+      background-color: #7966661f;
+      img {
+        margin: 0;
+        padding: .3em .3em 0 .3em;
+      }
       figcaption.figure-caption {
         font-size: .875em;
         color: #6c757d;
         font-style: italic;
-        background-color: #9973731f;
-        padding: .3em .8em .2em .8em;
+        margin: 0;
+        padding: .3em .5em 0 .5em;
       }
     }
   }
