@@ -10,30 +10,74 @@
             </section>
 
             <section>
-                <div class="container blog-index">
-                    <div class="row row-cols-1 row-cols-md-3 g-4">
-
-                        {% for post in blogpages %}
-                        <div class="col">
-                        <div class="card border rounded-3 h-100">
-                            <div class="card-body">
-                                <small class="card-date d-block text-start"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ post.specific.date }}</small>
-                                {% with post.main_image as main_image %}
-                                    {% if main_image %}{% image main_image fill-260x150 class="card-thumbnail" %}{% endif %}
-                                {% endwith %}
-                                <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
-                                {{ post.specific.intro }}
-                            </div>
-                            <div class="card-footer bg-transparent border-top-0 mb-2">
-                                <a href="{% pageurl post %}" class="btn btn-sm">Read More</a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="sidebar">
+                                {% if all_tags|first is not None %}
+                                <div class="tags">
+                                    <h3>Tagar</h3>
+                                    {% for tag in all_tags %}
+                                        <a href="?tag={{ tag }}"><button class="btn btn-outline-success btn-sm">{{ tag }}</button></a>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                
                             </div>
                         </div>
-                        </div>
-                        {% endfor %}
-
                     </div>
-                    <p><a href="{{ page.get_parent.url }}">Return to home</a></p>
+                </div>
+            </section>
 
+            <section>
+                <div class="container blog-index">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="row row-cols-1 row-cols-md-3 g-4">
+
+                                {% for post in blogpages %}
+                                <div class="col">
+                                <div class="card border rounded-3 h-100">
+                                    <div class="card-body">
+                                        <small class="card-date d-block text-start"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ post.specific.date }}</small>
+                                        {% with post.main_image as main_image %}
+                                            {% if main_image %}{% image main_image fill-260x150 class="card-thumbnail" %}{% endif %}
+                                        {% endwith %}
+                                        <h3 class="card-title mb-3"><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+                                        {{ post.specific.intro }}
+                                    </div>
+                                    <div class="card-footer bg-transparent border-top-0 mb-2">
+                                        <a href="{% pageurl post %}" class="btn btn-sm">Read More</a>
+                                    </div>
+                                </div>
+                                </div>
+                                {% endfor %}
+
+                            </div>
+
+                            {% if blogpages.has_other_pages %}
+                            <div class="text-center mt-4">
+                                {% if blogpages.has_previous %}
+                                    <a href="?page=1" class="btn btn-outline-primary btn-sm">First</a>
+                                {% endif %}
+
+                                {% if blogpages.has_previous %}
+                                    <a href="?page={{ blogpages.previous_page_number }}" class="btn btn-outline-primary btn-sm">← Previous</a>
+                                {% endif %}
+
+                                <span class="mx-2">Page {{ blogpages.number }} of {{ blogpages.paginator.num_pages }}</span>
+
+                                {% if blogpages.has_next %}
+                                    <a href="?page={{ blogpages.next_page_number }}" class="btn btn-outline-primary btn-sm">Next →</a>
+                                {% endif %}
+
+                                {% if blogpages.has_next %}
+                                    <a href="?page={{ blogpages.paginator.num_pages }}" class="btn btn-outline-primary btn-sm">Last</a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </section>
 

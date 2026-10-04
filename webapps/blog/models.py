@@ -1,5 +1,6 @@
 from django import forms
 from django.db import models
+from django.core.paginator import Paginator
 
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
@@ -55,17 +56,27 @@ class BlogIndexPage(Page):
 
     def get_context(self, request):
 
+        # Get all pages ordered by last post
+        blogpages = BlogPage.objects.descendant_of(self).live().order_by("-date")
+
         # Filter by tag
         tag = request.GET.get('tag')
         if tag:
-            blogpages = BlogPage.objects.filter(tags__name=tag)
-        else:
-            blogpages = BlogPage.objects.descendant_of(self).live().order_by("-date")
+            blogpages = blogpages.filter(tags__name=tag)            
+
+        # Get all unique tags
+        all_tags = BlogPage.objects.descendant_of(self).live().values_list('tags__name', flat=True).distinct()
             
+        # Pagination
+        page_size = 6
+        paginator = Paginator(blogpages, page_size)
+        page_number = request.GET.get('page')
+        blogpages = paginator.get_page(page_number)
 
         # Update template context
         context = super().get_context(request)
         context['blogpages'] = blogpages
+        context['all_tags'] = all_tags
         return context
 
     parent_page_types = ["home.HomePage", "blog.BlogIndexPage"]
