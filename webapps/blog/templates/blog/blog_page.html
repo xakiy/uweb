@@ -41,6 +41,19 @@
                     {% endfor %}
                     </div>
 
+                    <!-- Social Sharing Buttons -->
+                    <div class="social-share">
+                        <h3>Share this post:</h3>
+                        <ul>
+                            <li><a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener">Facebook</a></li>
+                            <li><a href="{{ page.get_social_shares.twitter }}" target="_blank" rel="noopener">Twitter</a></li>
+                            <li><a href="{{ page.get_social_shares.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a></li>
+                            <li><a href="{{ page.get_social_shares.telegram }}" target="_blank" rel="noopener">Telegram</a></li>
+                            <li><a href="{{ page.get_social_shares.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>
+                            <li><a href="{{ page.get_social_shares.email }}" target="_blank" rel="noopener">Email</a></li>
+                        </ul>
+                    </div>
+
                     <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
 
                     {% with tags=page.tags.all %}
