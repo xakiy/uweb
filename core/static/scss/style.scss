@@ -94,6 +94,13 @@ section + section {
   margin-bottom: 0;
   padding: 0;
   // color: rgba(255, 255, 255, 0.6);
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    margin: 1rem 0;
+  }
 }
 
 #main-header {
@@ -477,6 +484,51 @@ footer {
 	0%, 100% {transform: translateX(0);}
 	10%, 30%, 50%, 70%, 90% {transform: translateX(-2px);}
 	20%, 40%, 60%, 80% {transform: translateX(2px);}
+}
+
+// Social Sharing Buttons
+.social-share {
+  .social-share-links {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+    margin: 1rem 0;
+
+    .social-share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--bs-primary);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: var(--bs-main-primary);
+        color: #fff !important;
+        border-color: var(--bs-main-primary);
+        i {
+          color: #fff;
+        }
+      }
+
+      i {
+        font-size: 1.1rem;
+      }
+    }
+
+    .separator {
+      color: var(--bs-link-color);
+      opacity: 0.5;
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 0 0.5rem;
+    }
+  }
 }
 
 // wagtail-userbar::part(userbar) {

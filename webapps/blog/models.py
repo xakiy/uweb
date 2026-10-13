@@ -64,11 +64,11 @@ class BlogIndexPage(Page):
         # Filter by tag
         tag = request.GET.get('tag')
         if tag:
-            blogpages = blogpages.filter(tags__name=tag)            
+            blogpages = blogpages.filter(tags__name=tag)
 
         # Get all unique tags
         all_tags = BlogPage.objects.descendant_of(self).live().values_list('tags__name', flat=True).distinct()
-            
+
         # Pagination
         page_size = 6
         paginator = Paginator(blogpages, page_size)

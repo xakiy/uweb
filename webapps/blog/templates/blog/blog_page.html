@@ -42,19 +42,22 @@
                     </div>
 
                     <!-- Social Sharing Buttons -->
-                    <div class="social-share">
+                    <div class="social-share mb-4">
                         <h3>Share this post:</h3>
-                        <ul>
-                            <li><a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener">Facebook</a></li>
-                            <li><a href="{{ page.get_social_shares.twitter }}" target="_blank" rel="noopener">Twitter</a></li>
-                            <li><a href="{{ page.get_social_shares.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a></li>
-                            <li><a href="{{ page.get_social_shares.telegram }}" target="_blank" rel="noopener">Telegram</a></li>
-                            <li><a href="{{ page.get_social_shares.linkedin }}" target="_blank" rel="noopener">LinkedIn</a></li>
-                            <li><a href="{{ page.get_social_shares.email }}" target="_blank" rel="noopener">Email</a></li>
-                        </ul>
+                        <div class="social-share-links">
+                            <a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                            <span class="separator">|</span>
+                            <a href="{{ page.get_social_shares.twitter }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-twitter"></i> Twitter</a>
+                            <span class="separator">|</span>
+                            <a href="{{ page.get_social_shares.whatsapp }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                            <span class="separator">|</span>
+                            <a href="{{ page.get_social_shares.telegram }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-telegram"></i> Telegram</a>
+                            <span class="separator">|</span>
+                            <a href="{{ page.get_social_shares.linkedin }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                            <span class="separator">|</span>
+                            <a href="{{ page.get_social_shares.email }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-solid fa-envelope"></i> Email</a>
+                        </div>
                     </div>
-
-                    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
 
                     {% with tags=page.tags.all %}
                         {% if tags %}
