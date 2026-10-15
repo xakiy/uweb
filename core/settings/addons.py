@@ -4,6 +4,7 @@ ADDON_APPS = [
     "webapps.home",
     "webapps.search",
     "webapps.blog",
+    "webapps.analytics",
 
     "fontawesomefree",
     "wagtailfontawesomesvg",
@@ -18,6 +19,10 @@ ADDON_TEMPLATES = [
         #     ]
         # }
      }
+]
+
+ADDON_MIDDLEWARE = [
+    "webapps.analytics.middleware.PageViewMiddleware",
 ]
 
 # Merge complex template config

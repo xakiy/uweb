@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Analytics Dashboard - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1>Analytics Dashboard</h1>
+            
+            <!-- Time range selector -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-auto">
+                            <label for="days" class="form-label">Time Range</label>
+                            <select name="days" id="days" class="form-select">
+                                <option value="7" {% if days == 7 %}selected{% endif %}>Last 7 days</option>
+                                <option value="30" {% if days == 30 %}selected{% endif %}>Last 30 days</option>
+                                <option value="90" {% if days == 90 %}selected{% endif %}>Last 90 days</option>
+                                <option value="365" {% if days == 365 %}selected{% endif %}>Last year</option>
+                            </select>
+                        </div>
+                        <div class="col-auto align-self-end">
+                            <button type="submit" class="btn btn-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Summary cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Views</h5>
+                            <p class="display-4">{{ total_views }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Unique Visitors</h5>
+                            <p class="display-4">{{ unique_sessions }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Avg. Views/Day</h5>
+                            {% widthratio total_views days 1 as views_total %}
+                            <p class="display-4">{{ views_total | default:"0" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top pages -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3>Top Pages</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Page Title</th>
+                                    <th>URL</th>
+                                    <th>Views</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for pv in top_pages %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>
+                                        <a href="{% url 'analytics:page_analytics' pv.page_id %}">
+                                            {{ pv.page_title }}
+                                        </a>
+                                    </td>
+                                    <td><code>{{ pv.page_url }}</code></td>
+                                    <td>{{ pv.view_count }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No views recorded yet</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily views chart -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Daily Views</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="dailyViewsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('dailyViewsChart').getContext('2d');
+    const dailyData = {{ daily_views|safe }};
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dailyData.map(d => d.timestamp),
+            datasets: [{
+                label: 'Views',
+                data: dailyData.map(d => d.view_count),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
