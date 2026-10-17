@@ -215,6 +215,10 @@ elif Path(BASE_DIR / "config" / ".env.devel").is_file():
                 "level": LOGLEVEL,
                 "handlers": ["console",],
             },
+            "analytics": {
+                "level": "DEBUG",
+                "handlers": ["console",],
+            },
         },
     })
 
@@ -244,6 +248,9 @@ DATABASES = {
     "default": env.db("DB_DEFAULT"),
     "analytics": env.db("DB_ANALYTICS"),
 }
+
+# Database router for multi-db: analytics app -> 'analytics' DB, ContentType -> 'default' DB
+DATABASE_ROUTERS = ["core.settings.database_router.AnalyticsRouter"]
 
 # SECURITY WARNING: define the correct hosts in production!
 # EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

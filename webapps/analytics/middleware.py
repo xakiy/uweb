@@ -1,7 +1,10 @@
+import logging
 import uuid
 
 from django.utils import timezone
 from wagtail.models import Page
+
+logger = logging.getLogger("analytics.middleware")
 
 # URLs to exclude from tracking
 EXCLUDED_PREFIXES = (
@@ -30,6 +33,7 @@ class AnalyticsMiddleware:
         return response
 
     def process_response(self, request, response):
+        logger.info(f"Middleware called for {request.path}, status={response.status_code}")
         # Only track successful HTML responses
         if response.status_code != 200:
             return
@@ -42,9 +46,23 @@ class AnalyticsMiddleware:
         if any(request.path.startswith(p) for p in EXCLUDED_PREFIXES):
             return
 
-        # Only track Wagtail Pages (Wagtail sets request.page during serving)
+        # Only track Wagtail Pages
+        # Try request.page first (set by some Wagtail views), then fall back to resolver_match
         page = getattr(request, "page", None)
+        logger.info(f"  page from request.page={page}")
         if not page or not isinstance(page, Page):
+            # Fall back to resolving the page from the URL
+            from django.urls import resolve
+            try:
+                match = resolve(request.path)
+                page = getattr(match.func, "page", None)
+                logger.info(f"  page from resolver_match={page}")
+            except Exception as e:
+                page = None
+                logger.info(f"  resolve failed: {e}")
+
+        if not page or not isinstance(page, Page):
+            logger.info(f"  no page found, skipping {request.path}")
             return
 
         # Only track live pages
@@ -78,6 +96,10 @@ class AnalyticsMiddleware:
                     timestamp=now,
                     user_agent=request.META.get("HTTP_USER_AGENT", "")[:2048],
                 )
-        except Exception:
+                logger.info(f"Recorded visit to {request.path} for page '{page_title}'")
+            else:
+                logger.debug(f"Duplicate visit to {request.path} for session {session_id[:8]}...")
+        except Exception as e:
             # Silently ignore DB errors (e.g., analytics DB not yet created)
+            logger.error(f"Failed to record visit to {request.path}: {e}")
             pass

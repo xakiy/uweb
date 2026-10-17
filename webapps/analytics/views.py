@@ -27,9 +27,10 @@ def chart_data(request):
         return JsonResponse({"error": "start_date must be <= end_date"}, status=400)
 
     # Get the analytics database
-    from django.db import connection
+    from django.db import connections
 
-    with connection.cursor() as cursor:
+    conn = connections['analytics']
+    with conn.cursor() as cursor:
         # Daily/weekly/monthly aggregation
         if granularity == "weekly":
             date_func = "STRFTIME('%Y-W%W', timestamp)"
@@ -40,11 +41,11 @@ def chart_data(request):
 
         # Daily visits chart data
         cursor.execute(
-            f"""
-            SELECT {date_func} as period, COUNT(DISTINCT session_id) as visits
+            """
+            SELECT DATE(timestamp) as period, COUNT(DISTINCT session_id) as visits
             FROM analytics_pagevisit
             WHERE DATE(timestamp) BETWEEN ? AND ?
-            GROUP BY {date_func}
+            GROUP BY DATE(timestamp)
             ORDER BY period
             """,
             [str(start_date), str(end_date)],
