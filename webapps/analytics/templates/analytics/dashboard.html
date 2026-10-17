@@ -1,0 +1,338 @@
+{% extends "wagtailadmin/base.html" %}
+{% load static %}
+
+{% block title %}Analytics Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .analytics-header h1 {
+        margin: 0;
+        font-size: 2rem;
+    }
+    .date-range-bar {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .date-range-bar .preset-btn {
+        padding: 8px 16px;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    .date-range-bar .preset-btn:hover {
+        background: #e8e8e8;
+    }
+    .date-range-bar .preset-btn.active {
+        background: #2d79f7;
+        color: white;
+        border-color: #2d79f7;
+    }
+    .date-range-bar input[type="date"] {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .chart-container h3 {
+        margin: 0 0 16px 0;
+        font-size: 1.1rem;
+        color: #333;
+    }
+    .charts-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    @media (max-width: 768px) {
+        .charts-row {
+            grid-template-columns: 1px;
+        }
+    }
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255,255,255,0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+    .stats-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        flex: 1;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .stat-card .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d79f7;
+    }
+    .stat-card .stat-label {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 4px;
+    }
+    .chart-wrapper {
+        position: relative;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-header">
+    <h1>Analytics Dashboard</h1>
+    <div class="date-range-bar">
+        <button class="preset-btn" data-start="today" data-end="today">Today</button>
+        <button class="preset-btn" data-start="-7" data-end="today">Last 7 days</button>
+        <button class="preset-btn" data-start="-30" data-end="today">Last 30 days</button>
+        <button class="preset-btn" data-start="month_start" data-end="today">This month</button>
+        <button class="preset-btn" data-start="all" data-end="today">All time</button>
+        <input type="date" id="custom_start" style="display:none">
+        <input type="date" id="custom_end" style="display:none">
+        <button class="preset-btn" id="apply-custom">Apply</button>
+    </div>
+</div>
+
+<!-- Stats cards -->
+<div class="stats-row">
+    <div class="stat-card">
+        <div class="stat-value" id="stat-total-visits">-</div>
+        <div class="stat-label">Total Visits</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="stat-unique-visitors">-</div>
+        <div class="stat-label">Unique Visitors</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value" id="stat-total-pages">-</div>
+        <div class="stat-label">Pages Tracked</div>
+    </div>
+</div>
+
+<!-- Main charts -->
+<div class="chart-container">
+    <h3>Visits Over Time</h3>
+    <div class="chart-wrapper">
+        <div id="visits-chart"></div>
+    </div>
+</div>
+
+<div class="charts-row">
+    <div class="chart-container">
+        <h3>Top Pages</h3>
+        <div id="top-pages-chart"></div>
+    </div>
+    <div class="chart-container">
+        <h3>Visits by Day of Week</h3>
+        <div id="day-of-week-chart"></div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <h3>Visits by Hour of Day</h3>
+    <div id="hour-of-day-chart"></div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
+<script>
+    // Date helpers
+    function getDateOffset(days) {
+        const d = new Date();
+        d.setDate(d.getDate() + days);
+        return d.toISOString().split('T')[0];
+    }
+
+    function getMonthStart() {
+        const d = new Date();
+        d.setDate(1);
+        return d.toISOString().split('T')[0];
+    }
+
+    function getAllTimeStart() {
+        return '2000-01-01';
+    }
+
+    // Chart instances
+    let visitsChart, topPagesChart, dayOfWeekChart, hourOfDayChart;
+
+    function initCharts(data) {
+        // Destroy existing charts
+        if (visitsChart) visitsChart.destroy();
+        if (topPagesChart) topPagesChart.destroy();
+        if (dayOfWeekChart) dayOfWeekChart.destroy();
+        if (hourOfDayChart) hourOfDayChart.destroy();
+
+        // Update stats
+        const totalVisits = data.visits.reduce((s, v) => s + v.visits, 0);
+        const uniqueVisitors = new Set(data.visits.flatMap(v => [])).size;
+        document.getElementById('stat-total-visits').textContent = totalVisits.toLocaleString();
+        document.getElementById('stat-unique-visitors').textContent = data.visits.reduce((s, v) => s + v.visits, 0).toLocaleString();
+        document.getElementById('stat-total-pages').textContent = data.top_pages.length;
+
+        // Visits over time - line chart
+        const visitsOptions = {
+            series: [{ name: 'Visits', data: data.visits.map(v => v.visits) }],
+            chart: { type: 'line', height: 350, toolbar: { show: false } },
+            stroke: { width: 2, curve: 'smooth' },
+            xaxis: { categories: data.visits.map(v => v.period) },
+            yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
+            colors: ['#2d79f7'],
+            dataLabels: { enabled: false },
+            tooltip: { x: { format: 'dd MMM yyyy' } },
+        };
+        visitsChart = new ApexCharts(document.querySelector('#visits-chart'), visitsOptions);
+        visitsChart.render();
+
+        // Top pages - horizontal bar chart
+        const topPagesOptions = {
+            series: [{ name: 'Visits', data: data.top_pages.map(p => p.visits) }],
+            chart: { type: 'bar', height: 350, toolbar: { show: false } },
+            plotOptions: { bar: { horizontal: true } },
+            xaxis: { categories: data.top_pages.map(p => p.title) },
+            yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
+            colors: ['#008FFB'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+        };
+        topPagesChart = new ApexCharts(document.querySelector('#top-pages-chart'), topPagesOptions);
+        topPagesChart.render();
+
+        // Day of week - bar chart
+        const dayOfWeekOptions = {
+            series: [{ name: 'Visits', data: data.day_of_week.map(d => d.visits) }],
+            chart: { type: 'bar', height: 350, toolbar: { show: false } },
+            xaxis: { categories: data.day_of_week.map(d => d.day) },
+            yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
+            colors: ['#00E396'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+        };
+        dayOfWeekChart = new ApexCharts(document.querySelector('#day-of-week-chart'), dayOfWeekOptions);
+        dayOfWeekChart.render();
+
+        // Hour of day - bar chart
+        const hourOfDayOptions = {
+            series: [{ name: 'Visits', data: data.hour_of_day.map(h => h.visits) }],
+            chart: { type: 'bar', height: 350, toolbar: { show: false } },
+            xaxis: { categories: data.hour_of_day.map(h => `${String(h.hour).padStart(2, '0')}:00`) },
+            yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
+            colors: ['#FEB019'],
+            dataLabels: { enabled: false },
+            legend: { show: false },
+        };
+        hourOfDayChart = new ApexCharts(document.querySelector('#hour-of-day-chart'), hourOfDayOptions);
+        hourOfDayChart.render();
+    }
+
+    async function loadChartDateRange(startDate, endDate) {
+        const params = new URLSearchParams({
+            start_date: startDate,
+            end_date: endDate,
+            granularity: 'daily',
+        });
+        const resp = await fetch(`/analytics/api/chart-data/?${params}`);
+        const data = await resp.json();
+        initCharts(data);
+    }
+
+    // Preset buttons
+    document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Clear active state
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            // Hide custom date inputs
+            document.getElementById('custom_start').style.display = 'none';
+            document.getElementById('custom_end').style.display = 'none';
+
+            let start, end;
+            const today = new Date();
+
+            switch (this.dataset.start) {
+                case 'today':
+                    start = today.toISOString().split('T')[0];
+                    end = today.toISOString().split('T')[0];
+                    break;
+                case '-7':
+                    start = getDateOffset(-7);
+                    end = today.toISOString().split('T')[0];
+                    break;
+                case '-30':
+                    start = getDateOffset(-30);
+                    end = today.toISOString().split('T')[0];
+                    break;
+                case 'month_start':
+                    start = getMonthStart();
+                    end = today.toISOString().split('T')[0];
+                    break;
+                case 'all':
+                    start = getAllTimeStart();
+                    end = today.toISOString().split('T')[0];
+                    break;
+            }
+
+            loadChartDateRange(start, end);
+        });
+    });
+
+    // Custom date range
+    document.getElementById('apply-custom').addEventListener('click', () => {
+        const start = document.getElementById('custom_start').value;
+        const end = document.getElementById('custom_end').value;
+        if (start && end) {
+            loadChartDateRange(start, end);
+        }
+    });
+
+    // Show custom date inputs when "All time" or any preset is clicked, allow switching
+    document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
+        btn.addEventListener('dblclick', () => {
+            document.getElementById('custom_start').style.display = '';
+            document.getElementById('custom_end').style.display = '';
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        });
+    });
+
+    // Load default: last 7 days
+    (function() {
+        const today = new Date();
+        const start = getDateOffset(-7);
+        const end = today.toISOString().split('T')[0];
+        // Activate "Last 7 days" button
+        document.querySelectorAll('.preset-btn[data-start="-7"]')[0]?.classList.add('active');
+        loadChartDateRange(start, end);
+    })();
+</script>
+{% endblock %}

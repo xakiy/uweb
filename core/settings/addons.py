@@ -4,6 +4,7 @@ ADDON_APPS = [
     "webapps.home",
     "webapps.search",
     "webapps.blog",
+    "webapps.analytics",
 
     "fontawesomefree",
     "wagtailfontawesomesvg",

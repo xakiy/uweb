@@ -13,6 +13,7 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("search/", search_views.search, name="search"),
+    path("analytics/", include("webapps.analytics.urls", namespace="analytics")),
 ]
 
 # Any static files will be served by django server internally

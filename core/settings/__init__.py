@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "webapps.analytics.middleware.AnalyticsMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -240,7 +241,8 @@ WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'tx
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
-    "default": env.db("DB_DEFAULT")
+    "default": env.db("DB_DEFAULT"),
+    "analytics": env.db("DB_ANALYTICS"),
 }
 
 # SECURITY WARNING: define the correct hosts in production!
