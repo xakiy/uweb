@@ -1,0 +1,114 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <!-- Additional custom tracking styles can go here -->
+{% endblock %}
+
+{% block content %}
+    <header class="nice-padding">
+        <div class="row">
+            <div class="left col9">
+                <h1>📊 {% trans "Visitor Analytics" %}</h1>
+                <p class="help">{% trans "Real-time traffic metrics powered by SQLite." %}</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="nice-padding">
+        <div class="row">
+            <div class="col12">
+
+                <!-- Main Card Wrapper -->
+                <div style="background: var(--w-color-surface); border: 1px solid var(--w-color-border); border-radius: var(--w-border-radius-large); padding: 24px; margin-bottom: 2em; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <h3 style="margin-top: 0; margin-bottom: 20px;">{% trans "Weekly Traffic Profile" %} (Total: {{ total_week_views }} pageviews)</h3>
+
+                    <!-- 📊 FIX: Clean, isolated flex rows that bypass Wagtail panel defaults -->
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-end;
+                        height: 260px;
+                        background: var(--w-color-surface-info-panel);
+                        padding: 30px 20px 15px 20px;
+                        border-radius: var(--w-border-radius-large);
+                        border: 1px solid var(--w-color-border);
+                        box-sizing: border-box;
+                        width: 100%;
+                    ">
+                        {% for day in chart_data %}
+                            <div style="
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                height: 100%;
+                                justify-content: flex-end;
+                                margin: 0 6px;
+                            ">
+                                <!-- Data Label Value -->
+                                <span style="font-size: 0.8rem; margin-bottom: 6px; font-weight: 600; color: var(--w-color-text-secondary);">
+                                    {{ day.views }}
+                                </span>
+
+                                <!-- Restore the native visual bar configuration inside your template file -->
+                                <div style="
+                                    width: 100%;
+                                    max-width: 45px;
+                                    height: {{ day.percentage }}%;
+                                    min-height: {% if day.views > 0 %}4px{% else %}0px{% endif %};
+                                    background-color: var(--w-color-primary); /* 📊 Restores the clean, primary color */
+                                    border-radius: var(--w-border-radius-small) var(--w-border-radius-small) 0 0;
+                                    transition: height 0.4s ease-in-out;
+                                " title="{{ day.views }} views"></div>
+
+                                <!-- X-Axis Date String -->
+                                <span style="font-size: 0.75rem; margin-top: 10px; color: var(--w-color-text-context); white-space: nowrap;">
+                                    {{ day.label }}
+                                </span>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <!-- 🔗 NEW FEATURE: Unique Link Visit Distribution Panel -->
+                <div style="background: var(--w-color-surface); border: 1px solid var(--w-color-border); border-radius: var(--w-border-radius-large); padding: 24px;">
+                    <h3 style="margin-top: 0; margin-bottom: 15px;">🔗 {% trans "Unique Links Performance" %}</h3>
+
+                    <!-- Native Wagtail Table Wrapper Layout -->
+                    <table class="listing full-width">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">🌐 {% trans "Page URL Path" %}</th>
+                                <th style="text-align: right; width: 180px;">📈 {% trans "Total Hits Logged" %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for link in top_links %}
+                                <tr>
+                                    <td class="title" style="text-align: left;">
+                                        <code style="background: rgba(0,0,0,0.04); padding: 3px 6px; border-radius: 4px; font-family: monospace;">
+                                            {{ link.path }}
+                                        </code>
+                                    </td>
+                                    <td style="text-align: right; font-weight: bold; color: var(--w-color-primary);">
+                                        {{ link.total_views }}
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="2" class="help" style="text-align: center; padding: 20px;">
+                                        {% trans "No individual link actions recorded yet." %}
+                                    </td>
+                                endtr %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </main>
+{% endblock %}

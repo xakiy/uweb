@@ -4,10 +4,15 @@ ADDON_APPS = [
     "webapps.home",
     "webapps.search",
     "webapps.blog",
+    "webapps.pagevisits",
 
     "fontawesomefree",
     "wagtailfontawesomesvg",
     # "wagtailmenus",
+]
+
+ADDON_MIDDLEWARE = [
+    "webapps.pagevisits.middleware.LightweightPagevisitsMiddleware"
 ]
 
 ADDON_TEMPLATES = [

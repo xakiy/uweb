@@ -126,11 +126,12 @@ class BlogPage(Page):
         """Returns URLs for social sharing"""
         url = self.get_full_url()
         title = self.title
+        share_text = f"{url}\n\n{title}"
 
         return {
             'facebook': f"https://www.facebook.com/sharer/sharer.php?u={url}",
             'twitter': f"https://twitter.com/intent/tweet?url={url}&text={title}",
-            'whatsapp': f"https://wa.me/?text={urllib.parse.quote(url+"\n\n"+title, safe='')}",
+            'whatsapp': f"https://wa.me/?text={urllib.parse.quote(share_text, safe='')}",
             'telegram': f"https://t.me/share/url?url={url}&text={title}",
             'linkedin': f"https://www.linkedin.com/shareArticle?mini=true&url={url}&title={title}",
             'email': f"mailto:?subject={title}&body={url}",
