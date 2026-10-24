@@ -1,13 +1,15 @@
 import json
 
 from django.contrib.auth.decorators import permission_required
-from django.db.models import Count, F, Q
+from django.db.models import Case, CharField, Count, Value, When
+from django.db.models.functions import Extract, TruncDate
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_http_methods
 from wagtail.models import Page
+from .models import PageVisit
 
 
 def dashboard(request):
@@ -20,99 +22,84 @@ def chart_data(request):
     """JSON API endpoint for chart data."""
     start_date = parse_date(request.GET.get("start_date")) or timezone.now().date()
     end_date = parse_date(request.GET.get("end_date")) or timezone.now().date()
-    granularity = request.GET.get("granularity", "daily")
 
     # Validate date range
     if start_date > end_date:
         return JsonResponse({"error": "start_date must be <= end_date"}, status=400)
 
-    # Get the analytics database
-    from django.db import connections
+    # Top 10 pages by visits
+    top_pages = (
+        PageVisit.objects.annotate(
+            visit_date_bucket=TruncDate('timestamp')
+        ).filter(visit_date_bucket__range=(start_date, end_date))
+        .values('page_title')
+        .annotate(visit=Count('session_id', distinct=True))
+        .order_by('-visit_date')[:10]
+    )
 
-    conn = connections['analytics']
-    with conn.cursor() as cursor:
-        # Daily/weekly/monthly aggregation
-        if granularity == "weekly":
-            date_func = "STRFTIME('%Y-W%W', timestamp)"
-        elif granularity == "monthly":
-            date_func = "STRFTIME('%Y-%m', timestamp)"
-        else:
-            date_func = "DATE(timestamp)"
+    top_pages = [
+        {"page_title": row["page_title"], "visits": row["visit"]}
+        for row in top_pages
+    ]
 
-        # Daily visits chart data
-        cursor.execute(
-            """
-            SELECT DATE(timestamp) as period, COUNT(DISTINCT session_id) as visits
-            FROM analytics_pagevisit
-            WHERE DATE(timestamp) BETWEEN ? AND ?
-            GROUP BY DATE(timestamp)
-            ORDER BY period
-            """,
-            [str(start_date), str(end_date)],
+    # Daily visits chart data
+    visits_data = (
+        PageVisit.objects.annotate(
+            visit_date_bucket=TruncDate('timestamp')
         )
-        visits_data = [
-            {"period": row[0], "visits": row[1]}
-            for row in cursor.fetchall()
-        ]
+        .filter(visit_date_bucket__range=(start_date, end_date))
+        .values('visit_date')
+        .annotate(visits=Count('session_id', distinct=True))
+        .order_by('visit_date')
+    )
 
-        # Top 10 pages by visits
-        cursor.execute(
-            """
-            SELECT page_title, COUNT(DISTINCT session_id) as visits
-            FROM analytics_pagevisit
-            WHERE DATE(timestamp) BETWEEN ? AND ?
-            GROUP BY page_title
-            ORDER BY visits DESC
-            LIMIT 10
-            """,
-            [str(start_date), str(end_date)],
-        )
-        top_pages = [
-            {"title": row[0], "visits": row[1]}
-            for row in cursor.fetchall()
-        ]
+    visits_data = [
+        {"period": row["visit_date"].strftime('%Y-%m-%d'), "visits": row["visits"]}
+        for row in visits_data
+    ]
 
-        # Visits by day of week
-        cursor.execute(
-            """
-            SELECT CASE CAST(strftime('%w', timestamp) AS INTEGER)
-                WHEN 0 THEN 'Sunday'
-                WHEN 1 THEN 'Monday'
-                WHEN 2 THEN 'Tuesday'
-                WHEN 3 THEN 'Wednesday'
-                WHEN 4 THEN 'Thursday'
-                WHEN 5 THEN 'Friday'
-                WHEN 6 THEN 'Saturday'
-            END as day_name,
-            COUNT(DISTINCT session_id) as visits
-            FROM analytics_pagevisit
-            WHERE DATE(timestamp) BETWEEN ? AND ?
-            GROUP BY strftime('%w', timestamp)
-            ORDER BY day_name
-            """,
-            [str(start_date), str(end_date)],
+    # Visits by day of week
+    day_of_week = (
+        PageVisit.objects.annotate(
+            visit_date_bucket=TruncDate('timestamp'),
+            day_of_week=Case(
+                When(visit_date_bucket__week_day=0, then=Value('Sunday')),
+                When(visit_date_bucket__week_day=1, then=Value('Monday')),
+                When(visit_date_bucket__week_day=2, then=Value('Tuesday')),
+                When(visit_date_bucket__week_day=3, then=Value('Wednesday')),
+                When(visit_date_bucket__week_day=4, then=Value('Thursday')),
+                When(visit_date_bucket__week_day=5, then=Value('Friday')),
+                When(visit_date_bucket__week_day=6, then=Value('Saturday')),
+                output_field=CharField(),
+            ),
         )
-        day_of_week = [
-            {"day": row[0], "visits": row[1]}
-            for row in cursor.fetchall()
-        ]
+        .filter(visit_date_bucket__range=(start_date, end_date))
+        .values('day_of_week')
+        .annotate(visits=Count('session_id', distinct=True))
+        .order_by('day_of_week')
+    )
 
-        # Visits by hour of day
-        cursor.execute(
-            """
-            SELECT CAST(strftime('%H', timestamp) AS INTEGER) as hour,
-            COUNT(DISTINCT session_id) as visits
-            FROM analytics_pagevisit
-            WHERE DATE(timestamp) BETWEEN ? AND ?
-            GROUP BY strftime('%H', timestamp)
-            ORDER BY hour
-            """,
-            [str(start_date), str(end_date)],
+    day_of_week = [
+        {"day": row["day_of_week"], "visits": row["visits"]}
+        for row in day_of_week
+    ]
+
+    # Visits by hour of day
+    hour_of_day = (
+        PageVisit.objects.annotate(
+            visit_date_bucket=TruncDate('timestamp'),
+            hour=Extract('timestamp', 'hour'),
         )
-        hour_of_day = [
-            {"hour": row[0], "visits": row[1]}
-            for row in cursor.fetchall()
-        ]
+        .filter(visit_date_bucket__range=(start_date, end_date))
+        .values('hour')
+        .annotate(visits=Count('session_id', distinct=True))
+        .order_by('hour')
+    )
+
+    hour_of_day = [
+        {"hour": row["hour"], "visits": row["visits"]}
+        for row in hour_of_day
+    ]
 
     return JsonResponse({
         "visits": visits_data,

@@ -7,10 +7,10 @@ class AnalyticsMenuItem(MenuItem):
 
     def __init__(self):
         super().__init__(
-            "Analytics Dashboard",
+            "Analytics",
             "/analytics/dashboard/",
             name="analytics-dashboard",
-            icon_name="chart",
+            icon_name="resubmit",
             order=10000,  # Place at the end of the menu
         )
 

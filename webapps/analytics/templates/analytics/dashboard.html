@@ -107,58 +107,63 @@
 {% endblock %}
 
 {% block content %}
-<div class="analytics-header">
-    <h1>Analytics Dashboard</h1>
-    <div class="date-range-bar">
-        <button class="preset-btn" data-start="today" data-end="today">Today</button>
-        <button class="preset-btn" data-start="-7" data-end="today">Last 7 days</button>
-        <button class="preset-btn" data-start="-30" data-end="today">Last 30 days</button>
-        <button class="preset-btn" data-start="month_start" data-end="today">This month</button>
-        <button class="preset-btn" data-start="all" data-end="today">All time</button>
-        <input type="date" id="custom_start" style="display:none">
-        <input type="date" id="custom_end" style="display:none">
-        <button class="preset-btn" id="apply-custom">Apply</button>
-    </div>
-</div>
+    {% include "wagtailadmin/shared/header.html" with title="Analytics Dashboard" icon="resubmit" %}
 
-<!-- Stats cards -->
-<div class="stats-row">
-    <div class="stat-card">
-        <div class="stat-value" id="stat-total-visits">-</div>
-        <div class="stat-label">Total Visits</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value" id="stat-unique-visitors">-</div>
-        <div class="stat-label">Unique Visitors</div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-value" id="stat-total-pages">-</div>
-        <div class="stat-label">Pages Tracked</div>
-    </div>
-</div>
+    <div class="nice-padding">
 
-<!-- Main charts -->
-<div class="chart-container">
-    <h3>Visits Over Time</h3>
-    <div class="chart-wrapper">
-        <div id="visits-chart"></div>
-    </div>
-</div>
+        <div class="analytics-header nice-padding">
+            <div class="date-range-bar">
+                <button class="preset-btn" data-start="today" data-end="today">Today</button>
+                <button class="preset-btn" data-start="-7" data-end="today">Last 7 days</button>
+                <button class="preset-btn" data-start="-30" data-end="today">Last 30 days</button>
+                <button class="preset-btn" data-start="month_start" data-end="today">This month</button>
+                <button class="preset-btn" data-start="all" data-end="today">All time</button>
+                <input type="date" id="custom_start" style="display:none">
+                <input type="date" id="custom_end" style="display:none">
+                <button class="preset-btn" id="apply-custom">Apply</button>
+            </div>
+        </div>
 
-<div class="charts-row">
-    <div class="chart-container">
-        <h3>Top Pages</h3>
-        <div id="top-pages-chart"></div>
-    </div>
-    <div class="chart-container">
-        <h3>Visits by Day of Week</h3>
-        <div id="day-of-week-chart"></div>
-    </div>
-</div>
+        <!-- Stats cards -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total-visits">-</div>
+                <div class="stat-label">Total Visits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-unique-visitors">-</div>
+                <div class="stat-label">Unique Visitors</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="stat-total-pages">-</div>
+                <div class="stat-label">Pages Tracked</div>
+            </div>
+        </div>
 
-<div class="chart-container">
-    <h3>Visits by Hour of Day</h3>
-    <div id="hour-of-day-chart"></div>
+        <!-- Main charts -->
+        <div class="chart-container">
+            <h3>Visits Over Time</h3>
+            <div class="chart-wrapper">
+                <div id="visits-chart"></div>
+            </div>
+        </div>
+
+        <div class="charts-row">
+            <div class="chart-container">
+                <h3>Top Pages</h3>
+                <div id="top-pages-chart"></div>
+            </div>
+            <div class="chart-container">
+                <h3>Visits by Day of Week</h3>
+                <div id="day-of-week-chart"></div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3>Visits by Hour of Day</h3>
+            <div id="hour-of-day-chart"></div>
+        </div>
+
 </div>
 
 {% endblock %}
@@ -183,6 +188,11 @@
         return '2000-01-01';
     }
 
+    // Helper to get page title from API response
+    function getPageTitle(page) {
+        return page?.page_title || page?.title || '';
+    }
+
     // Chart instances
     let visitsChart, topPagesChart, dayOfWeekChart, hourOfDayChart;
 
@@ -193,65 +203,72 @@
         if (dayOfWeekChart) dayOfWeekChart.destroy();
         if (hourOfDayChart) hourOfDayChart.destroy();
 
-        // Update stats
-        const totalVisits = data.visits.reduce((s, v) => s + v.visits, 0);
-        const uniqueVisitors = new Set(data.visits.flatMap(v => [])).size;
+        // Safely get data arrays with defaults
+        const visits = Array.isArray(data.visits) ? data.visits : [];
+        const topPages = Array.isArray(data.top_pages) ? data.top_pages : [];
+        const dayOfWeek = Array.isArray(data.day_of_week) ? data.day_of_week : [];
+        const hourOfDay = Array.isArray(data.hour_of_day) ? data.hour_of_day : [];
+
+        // Update stats with safe defaults
+        const totalVisits = visits.reduce((s, v) => s + (v?.visits || 0), 0);
+        const uniqueVisitors = visits.length > 0 ? visits.length.toLocaleString() : '0';
+        const totalPages = topPages.length;
         document.getElementById('stat-total-visits').textContent = totalVisits.toLocaleString();
-        document.getElementById('stat-unique-visitors').textContent = data.visits.reduce((s, v) => s + v.visits, 0).toLocaleString();
-        document.getElementById('stat-total-pages').textContent = data.top_pages.length;
+        document.getElementById('stat-unique-visitors').textContent = uniqueVisitors;
+        document.getElementById('stat-total-pages').textContent = totalPages.toLocaleString();
 
         // Visits over time - line chart
         const visitsOptions = {
-            series: [{ name: 'Visits', data: data.visits.map(v => v.visits) }],
+            series: [{ name: 'Visits', data: visits.map(v => v?.visits || 0) }],
             chart: { type: 'line', height: 350, toolbar: { show: false } },
             stroke: { width: 2, curve: 'smooth' },
-            xaxis: { categories: data.visits.map(v => v.period) },
-            yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
+            xaxis: { categories: visits.map(v => String(v?.period || 'Unknown')) },
+            yaxis: { labels: { formatter: val => Math.round(Number(val)).toLocaleString() } },
             colors: ['#2d79f7'],
             dataLabels: { enabled: false },
             tooltip: { x: { format: 'dd MMM yyyy' } },
         };
-        visitsChart = new ApexCharts(document.querySelector('#visits-chart'), visitsOptions);
+        visitsChart = new ApexCharts(document.getElementById('visits-chart'), visitsOptions);
         visitsChart.render();
 
         // Top pages - horizontal bar chart
         const topPagesOptions = {
-            series: [{ name: 'Visits', data: data.top_pages.map(p => p.visits) }],
-            chart: { type: 'bar', height: 350, toolbar: { show: false } },
-            plotOptions: { bar: { horizontal: true } },
-            xaxis: { categories: data.top_pages.map(p => p.title) },
+            series: [{ name: 'Visits', data: topPages.map(p => Number(p?.visits) || 0) }],
+            chart: { type: 'bar', height: 350, toolbar: { show: true } },
+            plotOptions: { bar: { horizontal: false } },
+            xaxis: { categories: topPages.map(p => String(getPageTitle(p)) || 'Unknown') },
             yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
             colors: ['#008FFB'],
-            dataLabels: { enabled: false },
-            legend: { show: false },
+            dataLabels: { enabled: true },
+            legend: { show: true },
         };
-        topPagesChart = new ApexCharts(document.querySelector('#top-pages-chart'), topPagesOptions);
+        topPagesChart = new ApexCharts(document.getElementById('top-pages-chart'), topPagesOptions);
         topPagesChart.render();
 
         // Day of week - bar chart
         const dayOfWeekOptions = {
-            series: [{ name: 'Visits', data: data.day_of_week.map(d => d.visits) }],
+            series: [{ name: 'Visits', data: dayOfWeek.map(d => Number(d?.visits) || 0) }],
             chart: { type: 'bar', height: 350, toolbar: { show: false } },
-            xaxis: { categories: data.day_of_week.map(d => d.day) },
+            xaxis: { categories: dayOfWeek.map(d => String(d?.day || 'Unknown')) },
             yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
             colors: ['#00E396'],
             dataLabels: { enabled: false },
             legend: { show: false },
         };
-        dayOfWeekChart = new ApexCharts(document.querySelector('#day-of-week-chart'), dayOfWeekOptions);
+        dayOfWeekChart = new ApexCharts(document.getElementById('day-of-week-chart'), dayOfWeekOptions);
         dayOfWeekChart.render();
 
         // Hour of day - bar chart
         const hourOfDayOptions = {
-            series: [{ name: 'Visits', data: data.hour_of_day.map(h => h.visits) }],
+            series: [{ name: 'Visits', data: hourOfDay.map(h => Number(h?.visits) || 0) }],
             chart: { type: 'bar', height: 350, toolbar: { show: false } },
-            xaxis: { categories: data.hour_of_day.map(h => `${String(h.hour).padStart(2, '0')}:00`) },
+            xaxis: { categories: hourOfDay.map(h => `${String(Number(h?.hour) || 0).padStart(2, '0')}:00`) },
             yaxis: { labels: { formatter: val => Math.round(val).toLocaleString() } },
             colors: ['#FEB019'],
             dataLabels: { enabled: false },
             legend: { show: false },
         };
-        hourOfDayChart = new ApexCharts(document.querySelector('#hour-of-day-chart'), hourOfDayOptions);
+        hourOfDayChart = new ApexCharts(document.getElementById('hour-of-day-chart'), hourOfDayOptions);
         hourOfDayChart.render();
     }
 
@@ -266,73 +283,79 @@
         initCharts(data);
     }
 
-    // Preset buttons
-    document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Clear active state
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
+    // Wrap DOM-dependent code in DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+        // Preset buttons click handlers
+        document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Clear active state
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
 
-            // Hide custom date inputs
-            document.getElementById('custom_start').style.display = 'none';
-            document.getElementById('custom_end').style.display = 'none';
+                // Hide custom date inputs
+                document.getElementById('custom_start').style.display = 'none';
+                document.getElementById('custom_end').style.display = 'none';
 
-            let start, end;
-            const today = new Date();
+                let start, end;
+                const today = new Date();
 
-            switch (this.dataset.start) {
-                case 'today':
-                    start = today.toISOString().split('T')[0];
-                    end = today.toISOString().split('T')[0];
-                    break;
-                case '-7':
-                    start = getDateOffset(-7);
-                    end = today.toISOString().split('T')[0];
-                    break;
-                case '-30':
-                    start = getDateOffset(-30);
-                    end = today.toISOString().split('T')[0];
-                    break;
-                case 'month_start':
-                    start = getMonthStart();
-                    end = today.toISOString().split('T')[0];
-                    break;
-                case 'all':
-                    start = getAllTimeStart();
-                    end = today.toISOString().split('T')[0];
-                    break;
-            }
+                switch (this.dataset.start) {
+                    case 'today':
+                        start = today.toISOString().split('T')[0];
+                        end = today.toISOString().split('T')[0];
+                        break;
+                    case '-7':
+                        start = getDateOffset(-7);
+                        end = today.toISOString().split('T')[0];
+                        break;
+                    case '-30':
+                        start = getDateOffset(-30);
+                        end = today.toISOString().split('T')[0];
+                        break;
+                    case 'month_start':
+                        start = getMonthStart();
+                        end = today.toISOString().split('T')[0];
+                        break;
+                    case 'all':
+                        start = getAllTimeStart();
+                        end = today.toISOString().split('T')[0];
+                        break;
+                }
 
-            loadChartDateRange(start, end);
+                loadChartDateRange(start, end);
+            });
         });
-    });
 
-    // Custom date range
-    document.getElementById('apply-custom').addEventListener('click', () => {
-        const start = document.getElementById('custom_start').value;
-        const end = document.getElementById('custom_end').value;
-        if (start && end) {
-            loadChartDateRange(start, end);
+        // Custom date range
+        const applyCustomBtn = document.getElementById('apply-custom');
+        if (applyCustomBtn) {
+            applyCustomBtn.addEventListener('click', () => {
+                const start = document.getElementById('custom_start').value;
+                const end = document.getElementById('custom_end').value;
+                if (start && end) {
+                    loadChartDateRange(start, end);
+                }
+            });
         }
-    });
 
-    // Show custom date inputs when "All time" or any preset is clicked, allow switching
-    document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
-        btn.addEventListener('dblclick', () => {
-            document.getElementById('custom_start').style.display = '';
-            document.getElementById('custom_end').style.display = '';
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        // Show custom date inputs when "All time" or any preset is clicked, allow switching
+        document.querySelectorAll('.preset-btn[data-start]').forEach(btn => {
+            btn.addEventListener('dblclick', () => {
+                document.getElementById('custom_start').style.display = '';
+                document.getElementById('custom_end').style.display = '';
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            });
         });
-    });
 
-    // Load default: last 7 days
-    (function() {
-        const today = new Date();
-        const start = getDateOffset(-7);
-        const end = today.toISOString().split('T')[0];
-        // Activate "Last 7 days" button
-        document.querySelectorAll('.preset-btn[data-start="-7"]')[0]?.classList.add('active');
-        loadChartDateRange(start, end);
-    })();
+        // Load default: last 7 days
+        (function() {
+            const today = new Date();
+            const start = getDateOffset(-7);
+            const end = today.toISOString().split('T')[0];
+            // Activate "Last 7 days" button
+            document.querySelectorAll('.preset-btn[data-start="-7"]')[0]?.classList.add('active');
+            loadChartDateRange(start, end);
+        })();
+    });
 </script>
 {% endblock %}

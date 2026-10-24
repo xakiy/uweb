@@ -11,6 +11,10 @@ ADDON_APPS = [
     # "wagtailmenus",
 ]
 
+ADDON_MIDDLEWARE = [
+    "webapps.analytics.middleware.AnalyticsMiddleware"
+]
+
 ADDON_TEMPLATES = [
     {
         # 'OPTIONS': {

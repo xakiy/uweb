@@ -1,8 +1,12 @@
 import logging
 import uuid
-
+from django.urls import resolve
 from django.utils import timezone
 from wagtail.models import Page
+from webapps.analytics.models import PageVisit
+
+
+app_name = "analytics"
 
 logger = logging.getLogger("analytics.middleware")
 
@@ -15,7 +19,6 @@ EXCLUDED_PREFIXES = (
     "/favicon.ico",
     "/analytics/",
 )
-
 
 class AnalyticsMiddleware:
     """
@@ -33,34 +36,21 @@ class AnalyticsMiddleware:
         return response
 
     def process_response(self, request, response):
-        logger.info(f"Middleware called for {request.path}, status={response.status_code}")
-        # Only track successful HTML responses
-        if response.status_code != 200:
-            return
-
-        content_type = response.get("Content-Type", "")
-        if "text/html" not in content_type:
-            return
-
         # Skip excluded URL prefixes
         if any(request.path.startswith(p) for p in EXCLUDED_PREFIXES):
             return
 
-        # Only track Wagtail Pages
-        # Try request.page first (set by some Wagtail views), then fall back to resolver_match
-        page = getattr(request, "page", None)
-        logger.info(f"  page from request.page={page}")
-        if not page or not isinstance(page, Page):
-            # Fall back to resolving the page from the URL
-            from django.urls import resolve
-            try:
-                match = resolve(request.path)
-                page = getattr(match.func, "page", None)
-                logger.info(f"  page from resolver_match={page}")
-            except Exception as e:
-                page = None
-                logger.info(f"  resolve failed: {e}")
+        # Only track successful HTML responses
+        if response.status_code != 200:
+            return
 
+        route = getattr(request, "_wagtail_route_for_request", None)
+        page = getattr(route, 'page') if route else None
+
+        if "text/html" not in response.get("Content-Type", ""):
+            return
+
+        # Only track Wagtail Pages
         if not page or not isinstance(page, Page):
             logger.info(f"  no page found, skipping {request.path}")
             return
@@ -78,22 +68,20 @@ class AnalyticsMiddleware:
         # Snapshot the URL and title at visit time
         url = request.build_absolute_uri()
         page_title = page.title
-        now = timezone.now()
-        visit_date = now.date()
 
         # Deduplicate: each session can only visit each page once per day
         try:
-            existing = page.page_visits.using("analytics").filter(
-                session_id=session_id,
-                timestamp__date=visit_date,
+            existing = PageVisit.objects.filter(
+                page_id=page.id,
+                session_id=session_id
             ).first()
 
             if not existing:
-                page.page_visits.using("analytics").create(
-                    session_id=session_id,
+                PageVisit.objects.create(
+                    page_id=page.id,
+                    page_title=page.title,
                     url=url,
-                    page_title=page_title,
-                    timestamp=now,
+                    session_id=session_id,
                     user_agent=request.META.get("HTTP_USER_AGENT", "")[:2048],
                 )
                 logger.info(f"Recorded visit to {request.path} for page '{page_title}'")

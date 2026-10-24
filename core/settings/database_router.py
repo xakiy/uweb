@@ -11,23 +11,16 @@ class AnalyticsRouter:
     """
 
     def db_for_read(self, model, **hints):
-        if model._meta.app_label in ("contenttypes", "auth", "sessions"):
-            return "default"
         if model._meta.app_label == "analytics":
             return "analytics"
-        return None
+        return "default"
 
     def db_for_write(self, model, **hints):
-        if model._meta.app_label in ("contenttypes", "auth", "sessions"):
-            return "default"
         if model._meta.app_label == "analytics":
             return "analytics"
-        return None
+        return "default"
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        # contenttypes, auth, sessions -> only on 'default'
-        if app_label in ("contenttypes", "auth", "sessions"):
-            return db == "default"
         # analytics -> only on 'analytics'
         if app_label == "analytics":
             return db == "analytics"
@@ -35,8 +28,6 @@ class AnalyticsRouter:
         return db == "default"
 
     def allow_relation(self, obj1, obj2, **hints):
-        if obj1._meta.app_label == "analytics" and obj2._meta.app_label == "analytics":
-            return True
         if obj1._meta.app_label == "analytics" or obj2._meta.app_label == "analytics":
             return False
         return None
