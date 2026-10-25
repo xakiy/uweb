@@ -7,68 +7,78 @@
             <section>
 
                 <div class="container">
+                    <div class="row">
 
-                    <h2>{{ page.title }}</h2>
+                        <div class="col-12 col-lg-9 border-end">
 
-                    <p class="meta"><small class="text-end"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ page.date }}</small></p>
+                            <h2>{{ page.title }}</h2>
 
-                    {% with authors=page.authors.all %}
-                        {% if authors %}
-                    <h3>Ditulis oleh:</h3>
-                    <ul>
-                        {% for author in authors %}
-                            <li style="display: inline">
-                                {% image author.author_image fill-40x60 style="vertical-align: middle" %}
-                                {{ author.name }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                        {% endif %}
-                    {% endwith %}
+                            <p class="meta"><small class="text-end"><i class="fa-regular fa-calendar"></i>&nbsp;&nbsp;{{ page.date }}</small></p>
 
-                    <div class="intro">{{ page.intro|richtext }}</div>
+                            {% with authors=page.authors.all %}
+                                {% if authors %}
+                            <h3>Ditulis oleh:</h3>
+                            <ul>
+                                {% for author in authors %}
+                                    <li style="display: inline">
+                                        {% image author.author_image fill-40x60 style="vertical-align: middle" %}
+                                        {{ author.name }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                                {% endif %}
+                            {% endwith %}
 
-                    {{ page.body|richtext }}
+                            <div class="intro">{{ page.intro|richtext }}</div>
 
-                    <div class="row g-3 my-3 gallery-images">
-                    {% for item in page.gallery_images.all %}
-                        <div class="col">
-                            <figure>
-                                {% image item.image fill-320x240 class="figure-gallery" %}
-                                {% if item.caption %} <figcaption class="figure-caption">{{ item.caption }}</figcaption> {% endif %}
-                            </figure>
+                            {{ page.body|richtext }}
+
+                            <div class="row g-3 my-3 gallery-images">
+                            {% for item in page.gallery_images.all %}
+                                <div class="col">
+                                    <figure>
+                                        {% image item.image fill-320x240 class="figure-gallery" %}
+                                        {% if item.caption %} <figcaption class="figure-caption">{{ item.caption }}</figcaption> {% endif %}
+                                    </figure>
+                                </div>
+                            {% endfor %}
+                            </div>
+
+                            <!-- Social Sharing Buttons -->
+                            <div class="social-share mb-4">
+                                <h3>Share this post:</h3>
+                                <div class="social-share-links">
+                                    <a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-facebook"></i> Facebook</a>
+
+                                    <a href="{{ page.get_social_shares.twitter }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-twitter"></i> Twitter</a>
+
+                                    <a href="{{ page.get_social_shares.whatsapp }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+
+                                    <a href="{{ page.get_social_shares.telegram }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-telegram"></i> Telegram</a>
+
+                                    <a href="{{ page.get_social_shares.linkedin }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+
+                                    <a href="{{ page.get_social_shares.email }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-solid fa-envelope"></i> Email</a>
+                                </div>
+                            </div>
+
                         </div>
-                    {% endfor %}
-                    </div>
 
-                    <!-- Social Sharing Buttons -->
-                    <div class="social-share mb-4">
-                        <h3>Share this post:</h3>
-                        <div class="social-share-links">
-                            <a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-facebook"></i> Facebook</a>
-                            <span class="separator">|</span>
-                            <a href="{{ page.get_social_shares.twitter }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-twitter"></i> Twitter</a>
-                            <span class="separator">|</span>
-                            <a href="{{ page.get_social_shares.whatsapp }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-                            <span class="separator">|</span>
-                            <a href="{{ page.get_social_shares.telegram }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-telegram"></i> Telegram</a>
-                            <span class="separator">|</span>
-                            <a href="{{ page.get_social_shares.linkedin }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
-                            <span class="separator">|</span>
-                            <a href="{{ page.get_social_shares.email }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-solid fa-envelope"></i> Email</a>
+                        <div class="col-12 col-lg-3 pt-5">
+
+                            {% with tags=page.tags.all %}
+                                {% if tags %}
+                            <div class="tags">
+                                <h3>Tagar</h3>
+                                {% for tag in tags %}
+                                    <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button class="btn btn-outline-success">{{ tag }}</button></a>
+                                {% endfor %}
+                            </div>
+                                {% endif %}
+                            {% endwith %}
+
                         </div>
-                    </div>
-
-                    {% with tags=page.tags.all %}
-                        {% if tags %}
-                    <div class="tags">
-                        <h3>Tagar</h3>
-                        {% for tag in tags %}
-                            <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button class="btn btn-outline-success">{{ tag }}</button></a>
-                        {% endfor %}
-                    </div>
-                        {% endif %}
-                    {% endwith %}
+                    <div>
 
                 </div>
 
