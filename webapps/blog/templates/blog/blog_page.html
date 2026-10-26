@@ -9,7 +9,7 @@
                 <div class="container">
                     <div class="row">
 
-                        <div class="col-12 col-lg-9 border-end">
+                        <div class="col-12 col-lg-9">
 
                             <h2>{{ page.title }}</h2>
 
@@ -46,7 +46,7 @@
 
                             <!-- Social Sharing Buttons -->
                             <div class="social-share mb-4">
-                                <h3>Share this post:</h3>
+                                <h3>Bagikan tulisan ini:</h3>
                                 <div class="social-share-links">
                                     <a href="{{ page.get_social_shares.facebook }}" target="_blank" rel="noopener" class="btn social-share-btn"><i class="fa-brands fa-facebook"></i> Facebook</a>
 
@@ -66,16 +66,29 @@
 
                         <div class="col-12 col-lg-3 pt-5">
 
-                            {% with tags=page.tags.all %}
-                                {% if tags %}
-                            <div class="tags">
-                                <h3>Tagar</h3>
-                                {% for tag in tags %}
-                                    <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button class="btn btn-outline-success">{{ tag }}</button></a>
-                                {% endfor %}
-                            </div>
-                                {% endif %}
-                            {% endwith %}
+                                <div class="row side-row">
+                                    <ul class="nav nav-tabs side-tabs">
+                                      <li class="nav-item">
+                                        <a class="nav-link active" aria-current="page" href="#">Terpopuler</a>
+                                      </li>
+                                      <li class="nav-item">
+                                        <a class="nav-link" href="#">Terbaru</a>
+                                      </li>
+                                    </ul>
+                                </div>
+
+                                <div class="row side-row">
+                                    {% with tags=page.tags.all %}
+                                        {% if tags %}
+                                    <div class="tags">
+                                        <h3>Tagar terkait:</h3>
+                                        {% for tag in tags %}
+                                            <a href="{% slugurl 'tagar' %}?tag={{ tag }}"><button class="btn btn-outline-success">{{ tag }}</button></a>
+                                        {% endfor %}
+                                    </div>
+                                        {% endif %}
+                                    {% endwith %}
+                                </div>
 
                         </div>
                     <div>
