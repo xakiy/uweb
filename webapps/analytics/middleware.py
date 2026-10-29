@@ -18,6 +18,8 @@ EXCLUDED_PREFIXES = (
     "/search/",
     "/favicon.ico",
     "/analytics/",
+    "/media/",
+    "/__debug__/",
 )
 
 class AnalyticsMiddleware:
