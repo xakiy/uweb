@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block content %}
+
+            <section>
+
+                <div class="container">
+
+                    <!-- reservation_form.html -->
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <label>Event:</label>
+                        <select name="event_id">
+                            <option value="">Select an Event</option>
+                            {% for event in events %}
+                                <option value="{{ event.id }}">
+                                    {{ event.event_title }}
+                                    (Starts: {{ event.start_time|date:"M d, Y H:i" }} | {{ event.duration_minutes }} mins)
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <!-- Display logic for the selected event -->
+                        {% if selected_event %}
+                            <div class="event-details">
+                                <strong>Event:</strong> {{ selected_event.event_title }}<br>
+                                <strong>Start Time:</strong> {{ selected_event.start_time|date:"M d, Y H:i" }}<br>
+                                <strong>Duration:</strong> {{ selected_event.duration_minutes }} minutes<br>
+                                <strong>End Time:</strong> {{ selected_event.get_end_time|date:"M d, Y H:i" }}
+                            </div>
+                        {% endif %}
+
+                        <label>Full Name:</label>
+                        <input type="text" name="full_name" required>
+
+                        <label>Email:</label>
+                        <input type="email" name="email" required>
+
+                        <label>Phone Number:</label>
+                        <input type="tel" name="phone_number" required>
+
+                        <label>Verification Method:</label>
+                        <select name="platform">
+                            <option value="telegram">Telegram</option>
+                            <option value="whatsapp">WhatsApp</option>
+                        </select>
+
+                        <button type="submit">Request Reservation</button>
+                    </form>
+
+                </div>
+
+            </section>
+
+{% endblock content %}
