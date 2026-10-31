@@ -8,7 +8,7 @@
 {% for menuitem in menuitems %}
                 <li class="nav-item {% if menuitem.show_dropdown %} dropdown{% endif %}">
                   {% if menuitem.show_dropdown %}
-                    <a class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" aria-current="page" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="{% pageurl menuitem %}">{% if menuitem.seo_title %} {{ menuitem.seo_title }} {% else %} {{ menuitem.title }} {% endif %}</a>
+                    <a id="navbarDropdown{{ page.id }}" class="nav-link dropdown-toggle{% if menuitem.active %} active{% endif %}" aria-current="page" role="button" data-bs-toggle="dropdown" aria-expanded="false" href="#">{% if menuitem.seo_title %} {{ menuitem.seo_title }} {% else %} {{ menuitem.title }} {% endif %}</a>
                     {% top_menu_children parent=menuitem %}
                     {# Used to display child menu items #}
                   {% else %}
